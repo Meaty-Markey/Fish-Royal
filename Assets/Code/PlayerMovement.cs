@@ -32,11 +32,8 @@ public class PlayerMovement : MonoBehaviour
     {
         ProcessInputs();;
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.position += new Vector3(-100,0,0);
-            Debug.Log("This works");
-        }
+        if (!Input.GetKeyDown(KeyCode.Space)) return;
+        transform.position += new Vector3(-100,0,0);
     }
 
     void FixedUpdate()

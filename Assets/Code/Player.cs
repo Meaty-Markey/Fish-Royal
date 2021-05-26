@@ -1,19 +1,30 @@
-﻿/*using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Player 
+public class Player
 {
-	public int movespeed, picture;
-	string name;
-
-	public Player( int LightningMcQueen = 0, int pic, sting Playername)
+	public float movespeed, apex_value;
+	public string name;
+	public Sprite _PlayerSprite;
+	public Player(string Playername, Sprite PlayerSprite)
 	{
-		movespeed = LightningMcQueen;
-		picture = pic
-		name = Playername; 
+		name = Playername;
+		_PlayerSprite = PlayerSprite;
+		switch (Playername)
+		{
+			case "HammerheadShark":
+				movespeed = 150;
+				apex_value = 5;
+				break;
+			case "Fish":
+				movespeed = 200;
+				apex_value = 2;
+				break;
+			case "killer Whale":
+				movespeed = 100;
+				apex_value = 6;
+				break;
+		}
 
-
-
-
-	} */
+		PlayerMovement.moveSpeed = movespeed;
+	}
+}

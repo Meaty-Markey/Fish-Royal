@@ -4,7 +4,7 @@ using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed;
+    public static float moveSpeed;
 
     public Rigidbody2D rb;
 
@@ -15,23 +15,23 @@ public class PlayerMovement : MonoBehaviour
     int Coins = 0;
 
     public TMP_Text Coin;
-    
-
-
+     
+ 
     void Start()
     {
         Coin.text = ($"Coins: {PlayerPrefs.GetInt("TotalCoins")}");
         Coins = PlayerPrefs.GetInt("TotalCoins");
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        moveSpeed = Kyanshouse.MainPlayer.movespeed;
+        gameObject.GetComponent<SpriteRenderer>().sprite = Kyanshouse.MainPlayer._PlayerSprite;
     }
+
 
     void Update()
     {
-        ProcessInputs();
+        ProcessInputs();;
     }
-
-   
 
     void FixedUpdate()
     {
@@ -77,8 +77,11 @@ public class PlayerMovement : MonoBehaviour
         {
             SceneManager.LoadScene("Menu");
         }
-      
-      
+
+    
+
+
+
     }
 }
 

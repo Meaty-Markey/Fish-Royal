@@ -15,7 +15,10 @@ public class PlayerMovement : MonoBehaviour
     int Coins = 0;
 
     public TMP_Text Coin;
-     
+
+    public GameObject go;
+
+    float time = 0; 
  
     void Start()
     {
@@ -30,13 +33,20 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        ProcessInputs();;
+        ProcessInputs();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        time -= Time.deltaTime;
+
+        if(time < 0 )
         {
-            transform.position += new Vector3(-100,0,0);
-            Debug.Log("This works");
+            Instantiate(go);
+            go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
+            time = (Random.Range(0,10)); 
         }
+
+
+
+
     }
 
     void FixedUpdate()
@@ -45,8 +55,27 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void ProcessInputs()
-    { 
-        moveDirection = new UnityEngine.Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+    {
+
+        var MoveUp = Input.GetAxisRaw("Vertical");
+        var MoveLeft = Input.GetAxisRaw("Horizontal");
+        moveDirection = new UnityEngine.Vector2(MoveLeft, MoveUp).normalized;
+
+        if (MoveLeft > 0)
+            sr.flipX = true;
+        else if (MoveLeft < 0)
+            sr.flipX = false;
+
+        if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0 )
+            transform.position += new Vector3(-100, 0, 0);
+        else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+            transform.position += new Vector3(100, 0, 0);
+
+        if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+            transform.position += new Vector3(0, -100, 0);
+        else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+            transform.position += new Vector3(0, 100, 0);
+
     }
 
    void Move()

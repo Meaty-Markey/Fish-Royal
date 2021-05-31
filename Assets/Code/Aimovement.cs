@@ -22,11 +22,9 @@ public class Aimovement : MonoBehaviour
         down = GameObject.Find("Floor").transform.position.y;
         #endregion
 
-       // for(int i = 0; i <= 10; i++)
-       //  Instantiate(gameObject);
     }
 
-    float countdownTimer = 3f;
+    float countdownTimer = 1f;
     float currentTime;
     public void Update()
     {

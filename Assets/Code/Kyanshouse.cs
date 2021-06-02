@@ -40,8 +40,8 @@ public class Kyanshouse : MonoBehaviour
     {
         PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 1);
         Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
-        SceneManager.LoadScene("Game(KillerWhale)");
-
+        MainPlayer = new Player("killer Whale", KillerWhale);
+        Debug.Log($"PAID");
     }
 
 

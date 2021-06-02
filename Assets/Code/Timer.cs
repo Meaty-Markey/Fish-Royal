@@ -1,26 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
 using TMPro;
-using System;
+using UnityEngine;
 
-public class Timer : MonoBehaviour
+namespace Code
 {
-    float timeleft = 0f;
-    public TMP_Text timerOut;
-
-    
-    void Update()
+    public class Timer : MonoBehaviour
     {
-        timeleft += Time.deltaTime;
-        timerOut.text = ($"Time: {Math.Round(timeleft,2)}"); 
+        public TMP_Text timerOut;
+        private float timeleft;
 
-        /*if(timeleft<=0)
+
+        private void Update()
+        {
+            timeleft += Time.deltaTime;
+            timerOut.text = $"Time: {Math.Round(timeleft, 2)}";
+
+            /*if(timeleft<=0)
         {
             print("end game");
         } */
-
-
+        }
     }
 }

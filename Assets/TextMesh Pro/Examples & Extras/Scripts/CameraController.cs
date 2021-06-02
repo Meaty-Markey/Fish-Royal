@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TextMesh_Pro.Scripts
 {
@@ -15,41 +16,58 @@ namespace TextMesh_Pro.Scripts
         //private float prev_ZoomDelta;
 
 
-        private const string event_SmoothingValue = "Slider - Smoothing Value";
-        private const string event_FollowDistance = "Slider - Camera Zoom";
+        private const string EventSmoothingValue = "Slider - Smoothing Value";
+        private const string EventFollowDistance = "Slider - Camera Zoom";
 
-        public Transform CameraTarget;
+        [FormerlySerializedAs("CameraTarget")] public Transform cameraTarget;
 
-        public float FollowDistance = 30.0f;
-        public float MaxFollowDistance = 100.0f;
-        public float MinFollowDistance = 2.0f;
+        [FormerlySerializedAs("FollowDistance")]
+        public float followDistance = 30.0f;
 
-        public float ElevationAngle = 30.0f;
-        public float MaxElevationAngle = 85.0f;
-        public float MinElevationAngle;
+        [FormerlySerializedAs("MaxFollowDistance")]
+        public float maxFollowDistance = 100.0f;
 
-        public float OrbitalAngle;
+        [FormerlySerializedAs("MinFollowDistance")]
+        public float minFollowDistance = 2.0f;
 
-        public CameraModes CameraMode = CameraModes.Follow;
+        [FormerlySerializedAs("ElevationAngle")]
+        public float elevationAngle = 30.0f;
 
-        public bool MovementSmoothing = true;
-        public bool RotationSmoothing;
+        [FormerlySerializedAs("MaxElevationAngle")]
+        public float maxElevationAngle = 85.0f;
 
-        public float MovementSmoothingValue = 25f;
-        public float RotationSmoothingValue = 5.0f;
+        [FormerlySerializedAs("MinElevationAngle")]
+        public float minElevationAngle;
 
-        public float MoveSensitivity = 2.0f;
+        [FormerlySerializedAs("OrbitalAngle")] public float orbitalAngle;
 
-        private Transform cameraTransform;
+        [FormerlySerializedAs("CameraMode")] public CameraModes cameraMode = CameraModes.Follow;
 
-        private Vector3 currentVelocity = Vector3.zero;
-        private Vector3 desiredPosition;
-        private Transform dummyTarget;
-        private float mouseWheel;
-        private float mouseX;
-        private float mouseY;
-        private Vector3 moveVector;
-        private bool previousSmoothing;
+        [FormerlySerializedAs("MovementSmoothing")]
+        public bool movementSmoothing = true;
+
+        [FormerlySerializedAs("RotationSmoothing")]
+        public bool rotationSmoothing;
+
+        [FormerlySerializedAs("MovementSmoothingValue")]
+        public float movementSmoothingValue = 25f;
+
+        [FormerlySerializedAs("RotationSmoothingValue")]
+        public float rotationSmoothingValue = 5.0f;
+
+        [FormerlySerializedAs("MoveSensitivity")]
+        public float moveSensitivity = 2.0f;
+
+        private Transform _cameraTransform;
+
+        private Vector3 _currentVelocity = Vector3.zero;
+        private Vector3 _desiredPosition;
+        private Transform _dummyTarget;
+        private float _mouseWheel;
+        private float _mouseX;
+        private float _mouseY;
+        private Vector3 _moveVector;
+        private bool _previousSmoothing;
 
 
         private void Awake()
@@ -62,19 +80,19 @@ namespace TextMesh_Pro.Scripts
             if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android)
                 Input.simulateMouseWithTouches = false;
 
-            cameraTransform = transform;
-            previousSmoothing = MovementSmoothing;
+            _cameraTransform = transform;
+            _previousSmoothing = movementSmoothing;
         }
 
 
         // Use this for initialization
         private void Start()
         {
-            if (CameraTarget == null)
+            if (cameraTarget == null)
             {
                 // If we don't have a target (assigned by the player, create a dummy in the center of the scene).
-                dummyTarget = new GameObject("Camera Target").transform;
-                CameraTarget = dummyTarget;
+                _dummyTarget = new GameObject("Camera Target").transform;
+                cameraTarget = _dummyTarget;
             }
         }
 
@@ -85,81 +103,77 @@ namespace TextMesh_Pro.Scripts
 
 
             // Check if we still have a valid target
-            if (CameraTarget != null)
+            if (cameraTarget != null)
             {
-                if (CameraMode == CameraModes.Isometric)
-                {
-                    desiredPosition = CameraTarget.position + Quaternion.Euler(ElevationAngle, OrbitalAngle, 0f) *
-                        new Vector3(0, 0, -FollowDistance);
-                }
-                else if (CameraMode == CameraModes.Follow)
-                {
-                    desiredPosition = CameraTarget.position + CameraTarget.TransformDirection(
-                        Quaternion.Euler(ElevationAngle, OrbitalAngle, 0f) * new Vector3(0, 0, -FollowDistance));
-                }
+                if (cameraMode == CameraModes.Isometric)
+                    _desiredPosition = cameraTarget.position + Quaternion.Euler(elevationAngle, orbitalAngle, 0f) *
+                        new Vector3(0, 0, -followDistance);
+                else if (cameraMode == CameraModes.Follow)
+                    _desiredPosition = cameraTarget.position + cameraTarget.TransformDirection(
+                        Quaternion.Euler(elevationAngle, orbitalAngle, 0f) * new Vector3(0, 0, -followDistance));
 
-                if (MovementSmoothing)
+                if (movementSmoothing)
                     // Using Smoothing
-                    cameraTransform.position = Vector3.SmoothDamp(cameraTransform.position, desiredPosition,
-                        ref currentVelocity, MovementSmoothingValue * Time.fixedDeltaTime);
+                    _cameraTransform.position = Vector3.SmoothDamp(_cameraTransform.position, _desiredPosition,
+                        ref _currentVelocity, movementSmoothingValue * Time.fixedDeltaTime);
                 //cameraTransform.position = Vector3.Lerp(cameraTransform.position, desiredPosition, Time.deltaTime * 5.0f);
                 else
                     // Not using Smoothing
-                    cameraTransform.position = desiredPosition;
+                    _cameraTransform.position = _desiredPosition;
 
-                if (RotationSmoothing)
-                    cameraTransform.rotation = Quaternion.Lerp(cameraTransform.rotation,
-                        Quaternion.LookRotation(CameraTarget.position - cameraTransform.position),
-                        RotationSmoothingValue * Time.deltaTime);
+                if (rotationSmoothing)
+                    _cameraTransform.rotation = Quaternion.Lerp(_cameraTransform.rotation,
+                        Quaternion.LookRotation(cameraTarget.position - _cameraTransform.position),
+                        rotationSmoothingValue * Time.deltaTime);
                 else
-                    cameraTransform.LookAt(CameraTarget);
+                    _cameraTransform.LookAt(cameraTarget);
             }
         }
 
 
         private void GetPlayerInput()
         {
-            moveVector = Vector3.zero;
+            _moveVector = Vector3.zero;
 
             // Check Mouse Wheel Input prior to Shift Key so we can apply multiplier on Shift for Scrolling
-            mouseWheel = Input.GetAxis("Mouse ScrollWheel");
+            _mouseWheel = Input.GetAxis("Mouse ScrollWheel");
 
             float touchCount = Input.touchCount;
 
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) || touchCount > 0)
             {
-                mouseWheel *= 10;
+                _mouseWheel *= 10;
 
                 if (Input.GetKeyDown(KeyCode.I))
-                    CameraMode = CameraModes.Isometric;
+                    cameraMode = CameraModes.Isometric;
 
                 if (Input.GetKeyDown(KeyCode.F))
-                    CameraMode = CameraModes.Follow;
+                    cameraMode = CameraModes.Follow;
 
                 if (Input.GetKeyDown(KeyCode.S))
-                    MovementSmoothing = !MovementSmoothing;
+                    movementSmoothing = !movementSmoothing;
 
 
                 // Check for right mouse button to change camera follow and elevation angle
                 if (Input.GetMouseButton(1))
                 {
-                    mouseY = Input.GetAxis("Mouse Y");
-                    mouseX = Input.GetAxis("Mouse X");
+                    _mouseY = Input.GetAxis("Mouse Y");
+                    _mouseX = Input.GetAxis("Mouse X");
 
-                    if (mouseY > 0.01f || mouseY < -0.01f)
+                    if (_mouseY > 0.01f || _mouseY < -0.01f)
                     {
-                        ElevationAngle -= mouseY * MoveSensitivity;
+                        elevationAngle -= _mouseY * moveSensitivity;
                         // Limit Elevation angle between min & max values.
-                        ElevationAngle = Mathf.Clamp(ElevationAngle, MinElevationAngle, MaxElevationAngle);
+                        elevationAngle = Mathf.Clamp(elevationAngle, minElevationAngle, maxElevationAngle);
                     }
 
-                    if (mouseX > 0.01f || mouseX < -0.01f)
+                    if (_mouseX > 0.01f || _mouseX < -0.01f)
                     {
-                        OrbitalAngle += mouseX * MoveSensitivity;
-                        if (OrbitalAngle > 360)
-                            OrbitalAngle -= 360;
-                        if (OrbitalAngle < 0)
-                            OrbitalAngle += 360;
+                        orbitalAngle += _mouseX * moveSensitivity;
+                        if (orbitalAngle > 360)
+                            orbitalAngle -= 360;
+                        if (orbitalAngle < 0)
+                            orbitalAngle += 360;
                     }
                 }
 
@@ -171,20 +185,20 @@ namespace TextMesh_Pro.Scripts
                     // Handle elevation changes
                     if (deltaPosition.y > 0.01f || deltaPosition.y < -0.01f)
                     {
-                        ElevationAngle -= deltaPosition.y * 0.1f;
+                        elevationAngle -= deltaPosition.y * 0.1f;
                         // Limit Elevation angle between min & max values.
-                        ElevationAngle = Mathf.Clamp(ElevationAngle, MinElevationAngle, MaxElevationAngle);
+                        elevationAngle = Mathf.Clamp(elevationAngle, minElevationAngle, maxElevationAngle);
                     }
 
 
                     // Handle left & right 
                     if (deltaPosition.x > 0.01f || deltaPosition.x < -0.01f)
                     {
-                        OrbitalAngle += deltaPosition.x * 0.1f;
-                        if (OrbitalAngle > 360)
-                            OrbitalAngle -= 360;
-                        if (OrbitalAngle < 0)
-                            OrbitalAngle += 360;
+                        orbitalAngle += deltaPosition.x * 0.1f;
+                        if (orbitalAngle > 360)
+                            orbitalAngle -= 360;
+                        if (orbitalAngle < 0)
+                            orbitalAngle += 360;
                     }
                 }
 
@@ -196,16 +210,16 @@ namespace TextMesh_Pro.Scripts
 
                     if (Physics.Raycast(ray, out hit, 300, (1 << 10) | (1 << 11) | (1 << 12) | (1 << 14)))
                     {
-                        if (hit.transform == CameraTarget)
+                        if (hit.transform == cameraTarget)
                         {
                             // Reset Follow Position
-                            OrbitalAngle = 0;
+                            orbitalAngle = 0;
                         }
                         else
                         {
-                            CameraTarget = hit.transform;
-                            OrbitalAngle = 0;
-                            MovementSmoothing = previousSmoothing;
+                            cameraTarget = hit.transform;
+                            orbitalAngle = 0;
+                            movementSmoothing = _previousSmoothing;
                         }
                     }
                 }
@@ -213,33 +227,33 @@ namespace TextMesh_Pro.Scripts
 
                 if (Input.GetMouseButton(2))
                 {
-                    if (dummyTarget == null)
+                    if (_dummyTarget == null)
                     {
                         // We need a Dummy Target to anchor the Camera
-                        dummyTarget = new GameObject("Camera Target").transform;
-                        dummyTarget.position = CameraTarget.position;
-                        dummyTarget.rotation = CameraTarget.rotation;
-                        CameraTarget = dummyTarget;
-                        previousSmoothing = MovementSmoothing;
-                        MovementSmoothing = false;
+                        _dummyTarget = new GameObject("Camera Target").transform;
+                        _dummyTarget.position = cameraTarget.position;
+                        _dummyTarget.rotation = cameraTarget.rotation;
+                        cameraTarget = _dummyTarget;
+                        _previousSmoothing = movementSmoothing;
+                        movementSmoothing = false;
                     }
-                    else if (dummyTarget != CameraTarget)
+                    else if (_dummyTarget != cameraTarget)
                     {
                         // Move DummyTarget to CameraTarget
-                        dummyTarget.position = CameraTarget.position;
-                        dummyTarget.rotation = CameraTarget.rotation;
-                        CameraTarget = dummyTarget;
-                        previousSmoothing = MovementSmoothing;
-                        MovementSmoothing = false;
+                        _dummyTarget.position = cameraTarget.position;
+                        _dummyTarget.rotation = cameraTarget.rotation;
+                        cameraTarget = _dummyTarget;
+                        _previousSmoothing = movementSmoothing;
+                        movementSmoothing = false;
                     }
 
 
-                    mouseY = Input.GetAxis("Mouse Y");
-                    mouseX = Input.GetAxis("Mouse X");
+                    _mouseY = Input.GetAxis("Mouse Y");
+                    _mouseX = Input.GetAxis("Mouse X");
 
-                    moveVector = cameraTransform.TransformDirection(mouseX, mouseY, 0);
+                    _moveVector = _cameraTransform.TransformDirection(_mouseX, _mouseY, 0);
 
-                    dummyTarget.Translate(-moveVector, Space.World);
+                    _dummyTarget.Translate(-_moveVector, Space.World);
                 }
             }
 
@@ -259,18 +273,18 @@ namespace TextMesh_Pro.Scripts
 
                 if (zoomDelta > 0.01f || zoomDelta < -0.01f)
                 {
-                    FollowDistance += zoomDelta * 0.25f;
+                    followDistance += zoomDelta * 0.25f;
                     // Limit FollowDistance between min & max values.
-                    FollowDistance = Mathf.Clamp(FollowDistance, MinFollowDistance, MaxFollowDistance);
+                    followDistance = Mathf.Clamp(followDistance, minFollowDistance, maxFollowDistance);
                 }
             }
 
             // Check MouseWheel to Zoom in-out
-            if (mouseWheel < -0.01f || mouseWheel > 0.01f)
+            if (_mouseWheel < -0.01f || _mouseWheel > 0.01f)
             {
-                FollowDistance -= mouseWheel * 5.0f;
+                followDistance -= _mouseWheel * 5.0f;
                 // Limit FollowDistance between min & max values.
-                FollowDistance = Mathf.Clamp(FollowDistance, MinFollowDistance, MaxFollowDistance);
+                followDistance = Mathf.Clamp(followDistance, minFollowDistance, maxFollowDistance);
             }
         }
     }

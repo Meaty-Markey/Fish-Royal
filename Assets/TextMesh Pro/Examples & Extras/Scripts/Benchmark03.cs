@@ -1,25 +1,23 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TextMesh_Pro.Scripts
 {
     public class Benchmark03 : MonoBehaviour
     {
-        public int SpawnType;
-        public int NumberOfNPC = 12;
+        [FormerlySerializedAs("SpawnType")] public int spawnType;
+        [FormerlySerializedAs("NumberOfNPC")] public int numberOfNpc = 12;
 
-        public Font TheFont;
+        [FormerlySerializedAs("TheFont")] public Font theFont;
 
         //private TextMeshProFloatingText floatingText_Script;
-
-        private void Awake()
-        { }
 
 
         private void Start()
         {
-            for (var i = 0; i < NumberOfNPC; i++)
-                if (SpawnType == 0)
+            for (var i = 0; i < numberOfNpc; i++)
+                if (spawnType == 0)
                 {
                     // TextMesh Pro Implementation
                     //go.transform.localScale = new Vector3(2, 2, 2);
@@ -54,8 +52,8 @@ namespace TextMesh_Pro.Scripts
                     go.transform.position = new Vector3(0, 0, 0);
 
                     var textMesh = go.AddComponent<TextMesh>();
-                    textMesh.GetComponent<Renderer>().sharedMaterial = TheFont.material;
-                    textMesh.font = TheFont;
+                    textMesh.GetComponent<Renderer>().sharedMaterial = theFont.material;
+                    textMesh.font = theFont;
                     textMesh.anchor = TextAnchor.MiddleCenter;
                     textMesh.fontSize = 96;
 

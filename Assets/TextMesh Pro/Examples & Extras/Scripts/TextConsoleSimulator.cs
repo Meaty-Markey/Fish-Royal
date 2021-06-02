@@ -6,18 +6,18 @@ namespace TextMesh_Pro.Scripts
 {
     public class TextConsoleSimulator : MonoBehaviour
     {
-        private bool hasTextChanged;
-        private TMP_Text m_TextComponent;
+        private bool _hasTextChanged;
+        private TMP_Text _mTextComponent;
 
         private void Awake()
         {
-            m_TextComponent = gameObject.GetComponent<TMP_Text>();
+            _mTextComponent = gameObject.GetComponent<TMP_Text>();
         }
 
 
         private void Start()
         {
-            StartCoroutine(RevealCharacters(m_TextComponent));
+            StartCoroutine(RevealCharacters(_mTextComponent));
             //StartCoroutine(RevealWords(m_TextComponent));
         }
 
@@ -37,7 +37,7 @@ namespace TextMesh_Pro.Scripts
         // Event received when the text object has changed.
         private void ON_TEXT_CHANGED(Object obj)
         {
-            hasTextChanged = true;
+            _hasTextChanged = true;
         }
 
 
@@ -56,10 +56,10 @@ namespace TextMesh_Pro.Scripts
 
             while (true)
             {
-                if (hasTextChanged)
+                if (_hasTextChanged)
                 {
                     totalVisibleCharacters = textInfo.characterCount; // Update visible character count.
-                    hasTextChanged = false;
+                    _hasTextChanged = false;
                 }
 
                 if (visibleCount > totalVisibleCharacters)

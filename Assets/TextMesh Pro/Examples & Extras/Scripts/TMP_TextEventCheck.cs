@@ -1,33 +1,35 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TextMesh_Pro.Scripts
 {
-    public class TMP_TextEventCheck : MonoBehaviour
+    public class TMPTextEventCheck : MonoBehaviour
     {
-        public TMP_TextEventHandler TextEventHandler;
+        [FormerlySerializedAs("TextEventHandler")]
+        public TMPTextEventHandler textEventHandler;
 
         private void OnEnable()
         {
-            if (TextEventHandler != null)
+            if (textEventHandler != null)
             {
-                TextEventHandler.onCharacterSelection.AddListener(OnCharacterSelection);
-                TextEventHandler.onSpriteSelection.AddListener(OnSpriteSelection);
-                TextEventHandler.onWordSelection.AddListener(OnWordSelection);
-                TextEventHandler.onLineSelection.AddListener(OnLineSelection);
-                TextEventHandler.onLinkSelection.AddListener(OnLinkSelection);
+                textEventHandler.ONCharacterSelection.AddListener(OnCharacterSelection);
+                textEventHandler.ONSpriteSelection.AddListener(OnSpriteSelection);
+                textEventHandler.ONWordSelection.AddListener(OnWordSelection);
+                textEventHandler.ONLineSelection.AddListener(OnLineSelection);
+                textEventHandler.ONLinkSelection.AddListener(OnLinkSelection);
             }
         }
 
 
         private void OnDisable()
         {
-            if (TextEventHandler != null)
+            if (textEventHandler != null)
             {
-                TextEventHandler.onCharacterSelection.RemoveListener(OnCharacterSelection);
-                TextEventHandler.onSpriteSelection.RemoveListener(OnSpriteSelection);
-                TextEventHandler.onWordSelection.RemoveListener(OnWordSelection);
-                TextEventHandler.onLineSelection.RemoveListener(OnLineSelection);
-                TextEventHandler.onLinkSelection.RemoveListener(OnLinkSelection);
+                textEventHandler.ONCharacterSelection.RemoveListener(OnCharacterSelection);
+                textEventHandler.ONSpriteSelection.RemoveListener(OnSpriteSelection);
+                textEventHandler.ONWordSelection.RemoveListener(OnWordSelection);
+                textEventHandler.ONLineSelection.RemoveListener(OnLineSelection);
+                textEventHandler.ONLinkSelection.RemoveListener(OnLinkSelection);
             }
         }
 

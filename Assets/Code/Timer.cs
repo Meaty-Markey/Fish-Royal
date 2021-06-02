@@ -7,18 +7,13 @@ namespace Code
     public class Timer : MonoBehaviour
     {
         public TMP_Text timerOut;
-        private float timeleft;
+        private float _timeleft;
 
 
         private void Update()
         {
-            timeleft += Time.deltaTime;
-            timerOut.text = $"Time: {Math.Round(timeleft, 2)}";
-
-            /*if(timeleft<=0)
-        {
-            print("end game");
-        } */
+            _timeleft += Time.deltaTime;
+            timerOut.text = $"Time: {Math.Round(_timeleft, 2)}";
         }
     }
 }

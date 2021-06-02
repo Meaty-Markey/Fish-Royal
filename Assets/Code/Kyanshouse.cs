@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace Code
@@ -7,19 +6,18 @@ namespace Code
     public class Kyanshouse : MonoBehaviour
     {
         public static Player MainPlayer;
-        public TMP_Text Coin;
-        public Sprite KillerWhale;
-        public Sprite HammerheadShark;
-        public Sprite YellowFish;
-        private int TotalCoins;
-
-        private Dictionary<string, bool> unlockList = new Dictionary<string, bool>();
+        public TMP_Text coin;
+        public Sprite killerWhale;
+        public Sprite hammerheadShark;
+        public Sprite yellowFish;
+        private int _totalCoins;
 
         private void Start()
         {
-            MainPlayer = new Player("YellowFish", YellowFish);
+            MainPlayer = new Player("YellowFish", yellowFish);
+            PlayerPrefs.SetInt("Coin", 1000);
             PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("Coin"));
-            Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+            coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
         }
 
         private void DeleteDate()
@@ -30,18 +28,28 @@ namespace Code
 
         public void KillerWhaleButton()
         {
+            if (PlayerPrefs.GetInt("TotalCoins") < 100)
+            {
+                Debug.Log("Not Enough money");
+                return;
+            }
+
             PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 100);
-            Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
-            MainPlayer = new Player("killer Whale", KillerWhale);
-            Debug.Log("PAID");
+            coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+            MainPlayer = new Player("killer Whale", killerWhale);
         }
 
         public void HammerHeadButton()
         {
+            if (PlayerPrefs.GetInt("TotalCoins") < 50)
+            {
+                Debug.Log("Not Enough money");
+                return;
+            }
+
             PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 50);
-            Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
-            MainPlayer = new Player("HammerheadShark", HammerheadShark);
-            Debug.Log("PAID");
+            coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+            MainPlayer = new Player("HammerheadShark", hammerheadShark);
         }
     }
 }

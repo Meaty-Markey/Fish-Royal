@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TextMesh_Pro.Scripts
 {
@@ -6,16 +7,19 @@ namespace TextMesh_Pro.Scripts
     {
 #pragma warning disable 0414
 
-        public float SpinSpeed = 5;
-        public int RotationRange = 15;
-        private Transform m_transform;
+        [FormerlySerializedAs("SpinSpeed")] public float spinSpeed = 5;
 
-        private float m_time;
-        private Vector3 m_prevPOS;
-        private Vector3 m_initial_Rotation;
-        private Vector3 m_initial_Position;
-        private Color32 m_lightColor;
-        private int frames;
+        [FormerlySerializedAs("RotationRange")]
+        public int rotationRange = 15;
+
+        private Transform _mTransform;
+
+        private float _mTime;
+        private Vector3 _mPrevPos;
+        private Vector3 _mInitialRotation;
+        private Vector3 _mInitialPosition;
+        private Color32 _mLightColor;
+        private int _frames;
 
         public enum MotionType
         {
@@ -24,48 +28,48 @@ namespace TextMesh_Pro.Scripts
             Translation
         }
 
-        public MotionType Motion;
+        [FormerlySerializedAs("Motion")] public MotionType motion;
 
         private void Awake()
         {
-            m_transform = transform;
-            m_initial_Rotation = m_transform.rotation.eulerAngles;
-            m_initial_Position = m_transform.position;
+            _mTransform = transform;
+            _mInitialRotation = _mTransform.rotation.eulerAngles;
+            _mInitialPosition = _mTransform.position;
 
             var light = GetComponent<Light>();
-            m_lightColor = light != null ? light.color : Color.black;
+            _mLightColor = light != null ? light.color : Color.black;
         }
 
 
         // Update is called once per frame
         private void Update()
         {
-            if (Motion == MotionType.Rotation)
+            if (motion == MotionType.Rotation)
             {
-                m_transform.Rotate(0, SpinSpeed * Time.deltaTime, 0);
+                _mTransform.Rotate(0, spinSpeed * Time.deltaTime, 0);
             }
-            else if (Motion == MotionType.BackAndForth)
+            else if (motion == MotionType.BackAndForth)
             {
-                m_time += SpinSpeed * Time.deltaTime;
-                m_transform.rotation = Quaternion.Euler(m_initial_Rotation.x,
-                    Mathf.Sin(m_time) * RotationRange + m_initial_Rotation.y, m_initial_Rotation.z);
+                _mTime += spinSpeed * Time.deltaTime;
+                _mTransform.rotation = Quaternion.Euler(_mInitialRotation.x,
+                    Mathf.Sin(_mTime) * rotationRange + _mInitialRotation.y, _mInitialRotation.z);
             }
             else
             {
-                m_time += SpinSpeed * Time.deltaTime;
+                _mTime += spinSpeed * Time.deltaTime;
 
-                var x = 15 * Mathf.Cos(m_time * .95f);
+                var x = 15 * Mathf.Cos(_mTime * .95f);
                 float y = 10; // *Mathf.Sin(m_time * 1f) * Mathf.Cos(m_time * 1f);
                 var z = 0f; // *Mathf.Sin(m_time * .9f);    
 
-                m_transform.position = m_initial_Position + new Vector3(x, z, y);
+                _mTransform.position = _mInitialPosition + new Vector3(x, z, y);
 
                 // Drawing light patterns because they can be cool looking.
                 //if (frames > 2)
                 //    Debug.DrawLine(m_transform.position, m_prevPOS, m_lightColor, 100f);
 
-                m_prevPOS = m_transform.position;
-                frames += 1;
+                _mPrevPos = _mTransform.position;
+                _frames += 1;
             }
         }
     }

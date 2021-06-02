@@ -1,9 +1,10 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TextMesh_Pro.Scripts
 {
-    public class TMP_FrameRateCounter : MonoBehaviour
+    public class TMPFrameRateCounter : MonoBehaviour
     {
         public enum FpsCounterAnchorPositions
         {
@@ -13,46 +14,49 @@ namespace TextMesh_Pro.Scripts
             BottomRight
         }
 
-        private const string fpsLabel = "{0:2}</color> <#8080ff>FPS \n<#FF8000>{1:2} <#8080ff>MS";
-        public float UpdateInterval = 5.0f;
+        private const string FPSLabel = "{0:2}</color> <#8080ff>FPS \n<#FF8000>{1:2} <#8080ff>MS";
 
-        public FpsCounterAnchorPositions AnchorPosition = FpsCounterAnchorPositions.TopRight;
+        [FormerlySerializedAs("UpdateInterval")]
+        public float updateInterval = 5.0f;
 
-        private string htmlColorTag;
+        [FormerlySerializedAs("AnchorPosition")]
+        public FpsCounterAnchorPositions anchorPosition = FpsCounterAnchorPositions.TopRight;
 
-        private FpsCounterAnchorPositions last_AnchorPosition;
-        private Camera m_camera;
-        private Transform m_frameCounter_transform;
-        private int m_Frames;
-        private float m_LastInterval;
+        private string _htmlColorTag;
 
-        private TextMeshPro m_TextMeshPro;
+        private FpsCounterAnchorPositions _lastAnchorPosition;
+        private Camera _mCamera;
+        private Transform _mFrameCounterTransform;
+        private int _mFrames;
+        private float _mLastInterval;
+
+        private TextMeshPro _mTextMeshPro;
 
         private void Awake()
         {
             if (!enabled)
                 return;
 
-            m_camera = Camera.main;
+            _mCamera = Camera.main;
             Application.targetFrameRate = -1;
 
             var frameCounter = new GameObject("Frame Counter");
 
-            m_TextMeshPro = frameCounter.AddComponent<TextMeshPro>();
-            m_TextMeshPro.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            m_TextMeshPro.fontSharedMaterial =
+            _mTextMeshPro = frameCounter.AddComponent<TextMeshPro>();
+            _mTextMeshPro.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+            _mTextMeshPro.fontSharedMaterial =
                 Resources.Load<Material>("Fonts & Materials/LiberationSans SDF - Overlay");
 
 
-            m_frameCounter_transform = frameCounter.transform;
-            m_frameCounter_transform.SetParent(m_camera.transform);
-            m_frameCounter_transform.localRotation = Quaternion.identity;
+            _mFrameCounterTransform = frameCounter.transform;
+            _mFrameCounterTransform.SetParent(_mCamera.transform);
+            _mFrameCounterTransform.localRotation = Quaternion.identity;
 
-            m_TextMeshPro.enableWordWrapping = false;
-            m_TextMeshPro.fontSize = 24;
+            _mTextMeshPro.enableWordWrapping = false;
+            _mTextMeshPro.fontSize = 24;
             //m_TextMeshPro.FontColor = new Color32(255, 255, 255, 128);
             //m_TextMeshPro.edgeWidth = .15f;
-            m_TextMeshPro.isOverlay = true;
+            _mTextMeshPro.isOverlay = true;
 
             //m_TextMeshPro.FaceColor = new Color32(255, 128, 0, 0);
             //m_TextMeshPro.EdgeColor = new Color32(0, 255, 0, 255);
@@ -60,75 +64,75 @@ namespace TextMesh_Pro.Scripts
 
             //m_TextMeshPro.CreateSoftShadowClone(new Vector2(1f, -1f));
 
-            Set_FrameCounter_Position(AnchorPosition);
-            last_AnchorPosition = AnchorPosition;
+            Set_FrameCounter_Position(anchorPosition);
+            _lastAnchorPosition = anchorPosition;
         }
 
         private void Start()
         {
-            m_LastInterval = Time.realtimeSinceStartup;
-            m_Frames = 0;
+            _mLastInterval = Time.realtimeSinceStartup;
+            _mFrames = 0;
         }
 
         private void Update()
         {
-            if (AnchorPosition != last_AnchorPosition)
-                Set_FrameCounter_Position(AnchorPosition);
+            if (anchorPosition != _lastAnchorPosition)
+                Set_FrameCounter_Position(anchorPosition);
 
-            last_AnchorPosition = AnchorPosition;
+            _lastAnchorPosition = anchorPosition;
 
-            m_Frames += 1;
+            _mFrames += 1;
             var timeNow = Time.realtimeSinceStartup;
 
-            if (timeNow > m_LastInterval + UpdateInterval)
+            if (timeNow > _mLastInterval + updateInterval)
             {
                 // display two fractional digits (f2 format)
-                var fps = m_Frames / (timeNow - m_LastInterval);
+                var fps = _mFrames / (timeNow - _mLastInterval);
                 var ms = 1000.0f / Mathf.Max(fps, 0.00001f);
 
                 if (fps < 30)
-                    htmlColorTag = "<color=yellow>";
+                    _htmlColorTag = "<color=yellow>";
                 else if (fps < 10)
-                    htmlColorTag = "<color=red>";
+                    _htmlColorTag = "<color=red>";
                 else
-                    htmlColorTag = "<color=green>";
+                    _htmlColorTag = "<color=green>";
 
                 //string format = System.String.Format(htmlColorTag + "{0:F2} </color>FPS \n{1:F2} <#8080ff>MS",fps, ms);
                 //m_TextMeshPro.text = format;
-                m_TextMeshPro.SetText(htmlColorTag + fpsLabel, fps, ms);
+                _mTextMeshPro.SetText(_htmlColorTag + FPSLabel, fps, ms);
 
-                m_Frames = 0;
-                m_LastInterval = timeNow;
+                _mFrames = 0;
+                _mLastInterval = timeNow;
             }
         }
 
 
-        private void Set_FrameCounter_Position(FpsCounterAnchorPositions anchor_position)
+        private void Set_FrameCounter_Position(FpsCounterAnchorPositions anchorPosition)
         {
             //Debug.Log("Changing frame counter anchor position.");
-            m_TextMeshPro.margin = new Vector4(1f, 1f, 1f, 1f);
+            _mTextMeshPro.margin = new Vector4(1f, 1f, 1f, 1f);
 
-            switch (anchor_position)
+            switch (anchorPosition)
             {
                 case FpsCounterAnchorPositions.TopLeft:
-                    m_TextMeshPro.alignment = TextAlignmentOptions.TopLeft;
-                    m_TextMeshPro.rectTransform.pivot = new Vector2(0, 1);
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 1, 100.0f));
+                    _mTextMeshPro.alignment = TextAlignmentOptions.TopLeft;
+                    _mTextMeshPro.rectTransform.pivot = new Vector2(0, 1);
+                    _mFrameCounterTransform.position = _mCamera.ViewportToWorldPoint(new Vector3(0, 1, 100.0f));
                     break;
                 case FpsCounterAnchorPositions.BottomLeft:
-                    m_TextMeshPro.alignment = TextAlignmentOptions.BottomLeft;
-                    m_TextMeshPro.rectTransform.pivot = new Vector2(0, 0);
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 0, 100.0f));
+                    _mTextMeshPro.alignment = TextAlignmentOptions.BottomLeft;
+                    _mTextMeshPro.rectTransform.pivot = new Vector2(0, 0);
+                    _mFrameCounterTransform.position = _mCamera.ViewportToWorldPoint(new Vector3(0, 0, 100.0f));
                     break;
                 case FpsCounterAnchorPositions.TopRight:
-                    m_TextMeshPro.alignment = TextAlignmentOptions.TopRight;
-                    m_TextMeshPro.rectTransform.pivot = new Vector2(1, 1);
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 1, 100.0f));
+                    _mTextMeshPro.alignment = TextAlignmentOptions.TopRight;
+                    _mTextMeshPro.rectTransform.pivot = new Vector2(1, 1);
+                    _mFrameCounterTransform.position = _mCamera.ViewportToWorldPoint(new Vector3(1, 1, 100.0f));
                     break;
                 case FpsCounterAnchorPositions.BottomRight:
-                    m_TextMeshPro.alignment = TextAlignmentOptions.BottomRight;
-                    m_TextMeshPro.rectTransform.pivot = new Vector2(1, 0);
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 0, 100.0f));
+                    _mTextMeshPro.alignment = TextAlignmentOptions.BottomRight;
+                    _mTextMeshPro.rectTransform.pivot = new Vector2(1, 0);
+                    _mFrameCounterTransform.position = _mCamera.ViewportToWorldPoint(new Vector3(1, 0, 100.0f));
                     break;
             }
         }

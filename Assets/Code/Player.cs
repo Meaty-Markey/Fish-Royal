@@ -1,35 +1,35 @@
 ﻿using UnityEngine;
 
+#pragma warning disable 414
+
 namespace Code
 {
     public class Player
     {
-        public Sprite _PlayerSprite;
-        public float movespeed, apex_value;
-        public string name;
+        public readonly float Movespeed;
+        public readonly Sprite PlayerSprite;
+        private float _apexValue;
 
-        public Player(string Playername, Sprite PlayerSprite)
+        public Player(string playername, Sprite playerSprite)
         {
-            name = Playername;
-            _PlayerSprite = PlayerSprite;
-            switch (Playername)
+            PlayerSprite = playerSprite;
+            switch (playername)
             {
                 case "HammerheadShark":
-                    movespeed = 150;
-                    apex_value = 5;
+                    Movespeed = 150;
+                    _apexValue = 5;
                     break;
                 case "YellowFish":
-                    Debug.Log("Hot");
-                    movespeed = 200;
-                    apex_value = 2;
+                    Movespeed = 200;
+                    _apexValue = 2;
                     break;
                 case "killer Whale":
-                    movespeed = 100;
-                    apex_value = 6;
+                    Movespeed = 100;
+                    _apexValue = 6;
                     break;
             }
 
-            PlayerMovement.moveSpeed = movespeed;
+            PlayerMovement.MoveSpeed = Movespeed;
         }
     }
 }

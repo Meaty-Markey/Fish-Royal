@@ -1,35 +1,36 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Code
 {
     public class PlayerMovement : MonoBehaviour
     {
-        public static float moveSpeed;
+        public static float MoveSpeed;
 
         public Rigidbody2D rb;
 
-        public TMP_Text Coin;
+        [FormerlySerializedAs("Coin")] public TMP_Text coin;
 
         public GameObject go;
 
-        private int Coins;
+        private int _coins;
 
-        private Vector2 moveDirection;
+        private Vector2 _moveDirection;
 
-        private SpriteRenderer sr;
+        private SpriteRenderer _sr;
 
-        private float time;
+        private float _time;
 
         private void Start()
         {
-            Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
-            Coins = PlayerPrefs.GetInt("TotalCoins");
+            coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+            _coins = PlayerPrefs.GetInt("TotalCoins");
             rb = GetComponent<Rigidbody2D>();
-            sr = GetComponent<SpriteRenderer>();
-            moveSpeed = Kyanshouse.MainPlayer.movespeed;
-            gameObject.GetComponent<SpriteRenderer>().sprite = Kyanshouse.MainPlayer._PlayerSprite;
+            _sr = GetComponent<SpriteRenderer>();
+            MoveSpeed = Kyanshouse.MainPlayer.Movespeed;
+            gameObject.GetComponent<SpriteRenderer>().sprite = Kyanshouse.MainPlayer.PlayerSprite;
         }
 
 
@@ -37,13 +38,13 @@ namespace Code
         {
             ProcessInputs();
 
-            time -= Time.deltaTime;
+            _time -= Time.deltaTime;
 
-            if (time < 0)
+            if (_time < 0)
             {
                 Instantiate(go);
                 go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
-                time = Random.Range(0, 10);
+                _time = Random.Range(0, 10);
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     transform.position += new Vector3(200, 0, 0);
@@ -65,72 +66,67 @@ namespace Code
                     Debug.Log("This works");
                 }
             }
-
-            
         }
-        
-        void FixedUpdate()
+
+        private void FixedUpdate()
         {
             Move();
         }
 
-        void ProcessInputs()
-        {
-            var MoveUp = Input.GetAxisRaw("Vertical");
-            var MoveLeft = Input.GetAxisRaw("Horizontal");
-            moveDirection = new Vector2(MoveLeft, MoveUp).normalized;
-
-            if (MoveLeft > 0)
-                sr.flipX = true;
-            else if (MoveLeft < 0)
-                sr.flipX = false;
-
-            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                transform.position += new Vector3(-100, 0, 0);
-            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                transform.position += new Vector3(100, 0, 0);
-
-            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                transform.position += new Vector3(0, 0, -100);
-            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                transform.position += new Vector3(0, 0, -100);
-        }
-
-        void Move()
-        {
-            rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
-        }
-        
-        
-        
-        
 
         private void OnCollisionEnter2D(Collision2D col)
         {
-            if (col.gameObject.tag == "Player")
+            if (col.gameObject.CompareTag("Player"))
             {
-                Coins += 1;
-                Coin.text = $"Coins: {Coins}";
+                _coins += 1;
+                coin.text = $"Coins: {_coins}";
                 Destroy(col.gameObject);
             }
 
-            if (col.gameObject.tag == "Plant")
+            if (col.gameObject.CompareTag("Plant"))
             {
-                Coins += 1;
-                Coin.text = $"Coins: {Coins}";
+                _coins += 1;
+                coin.text = $"Coins: {_coins}";
                 Destroy(col.gameObject);
             }
 
-            if (col.gameObject.tag == "Enemy")
+            if (col.gameObject.CompareTag("Enemy"))
             {
-                Coins -= 1;
-                Coin.text = $"Coins: {Coins}";
+                _coins -= 1;
+                coin.text = $"Coins: {_coins}";
                 Destroy(col.gameObject);
-                PlayerPrefs.SetInt("Coin", Coins);
+                PlayerPrefs.SetInt("Coin", _coins);
                 SceneManager.LoadScene("Menu");
             }
 
-            if (col.gameObject.tag == "Finish") SceneManager.LoadScene("Menu");
+            if (col.gameObject.CompareTag("Finish")) SceneManager.LoadScene("Menu");
+        }
+
+        private void ProcessInputs()
+        {
+            var moveUp = Input.GetAxisRaw("Vertical");
+            var moveLeft = Input.GetAxisRaw("Horizontal");
+            _moveDirection = new Vector2(moveLeft, moveUp).normalized;
+
+            if (moveLeft > 0)
+                _sr.flipX = true;
+            else if (moveLeft < 0)
+                _sr.flipX = false;
+
+            if (Input.GetKeyDown(KeyCode.Space) && moveLeft < 0)
+                transform.position += new Vector3(-100, 0, 0);
+            else if (Input.GetKeyDown(KeyCode.Space) && moveUp > 0)
+                transform.position += new Vector3(100, 0, 0);
+
+            if (Input.GetKeyDown(KeyCode.Space) && moveLeft < 0)
+                transform.position += new Vector3(0, 0, -100);
+            else if (Input.GetKeyDown(KeyCode.Space) && moveUp > 0)
+                transform.position += new Vector3(0, 0, -100);
+        }
+
+        private void Move()
+        {
+            rb.velocity = new Vector2(_moveDirection.x * MoveSpeed, _moveDirection.y * MoveSpeed);
         }
     }
 }

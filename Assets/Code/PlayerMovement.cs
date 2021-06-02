@@ -66,38 +66,44 @@ namespace Code
                 }
             }
 
-            void FixedUpdate()
-            {
-                Move();
-            }
-
-            void ProcessInputs()
-            {
-                var MoveUp = Input.GetAxisRaw("Vertical");
-                var MoveLeft = Input.GetAxisRaw("Horizontal");
-                moveDirection = new Vector2(MoveLeft, MoveUp).normalized;
-
-                if (MoveLeft > 0)
-                    sr.flipX = true;
-                else if (MoveLeft < 0)
-                    sr.flipX = false;
-
-                if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                    transform.position += new Vector3(-100, 0, 0);
-                else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                    transform.position += new Vector3(100, 0, 0);
-
-                if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                    transform.position += new Vector3(0, 0, -100);
-                else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                    transform.position += new Vector3(0, 0, -100);
-            }
-
-            void Move()
-            {
-                rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
-            }
+            
         }
+        
+        void FixedUpdate()
+        {
+            Move();
+        }
+
+        void ProcessInputs()
+        {
+            var MoveUp = Input.GetAxisRaw("Vertical");
+            var MoveLeft = Input.GetAxisRaw("Horizontal");
+            moveDirection = new Vector2(MoveLeft, MoveUp).normalized;
+
+            if (MoveLeft > 0)
+                sr.flipX = true;
+            else if (MoveLeft < 0)
+                sr.flipX = false;
+
+            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                transform.position += new Vector3(-100, 0, 0);
+            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                transform.position += new Vector3(100, 0, 0);
+
+            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                transform.position += new Vector3(0, 0, -100);
+            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                transform.position += new Vector3(0, 0, -100);
+        }
+
+        void Move()
+        {
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        }
+        
+        
+        
+        
 
         private void OnCollisionEnter2D(Collision2D col)
         {

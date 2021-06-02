@@ -1,8 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
-
 namespace Code
 {
     public class PlayerMovement : MonoBehaviour
@@ -11,7 +9,7 @@ namespace Code
 
         public Rigidbody2D rb;
 
-        [FormerlySerializedAs("Coin")] public TMP_Text coin;
+        public TMP_Text coin;
 
         public GameObject go;
 
@@ -40,31 +38,29 @@ namespace Code
 
             _time -= Time.deltaTime;
 
-            if (_time < 0)
+            if (!(_time < 0)) return;
+            Instantiate(go);
+            go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
+            _time = Random.Range(0, 10);
+            if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                Instantiate(go);
-                go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
-                _time = Random.Range(0, 10);
-                if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    transform.position += new Vector3(200, 0, 0);
-                    Debug.Log("This works");
-                }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    transform.position += new Vector3(-200, 0, 0);
-                    Debug.Log("This works");
-                }
-                else if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    transform.position += new Vector3(0, 0, 200);
-                    Debug.Log("This works");
-                }
-                else if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    transform.position += new Vector3(0, 0, -200);
-                    Debug.Log("This works");
-                }
+                transform.position += new Vector3(200, 0, 0);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                transform.position += new Vector3(-200, 0, 0);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                transform.position += new Vector3(0, 0, 200);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                transform.position += new Vector3(0, 0, -200);
+                Debug.Log("This works");
             }
         }
 

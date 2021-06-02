@@ -8,8 +8,6 @@ namespace Code
     {
         public TMP_Text timerOut;
         private float _timeleft;
-
-
         private void Update()
         {
             _timeleft += Time.deltaTime;

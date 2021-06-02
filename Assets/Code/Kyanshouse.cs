@@ -9,6 +9,7 @@ public class Kyanshouse : MonoBehaviour
     public TMP_Text Coin;
     public Sprite KillerWhale;
     public Sprite HammerheadShark; 
+    public Sprite YellowFish; 
     private int TotalCoins;
     public static Player MainPlayer;
 
@@ -20,27 +21,24 @@ public class Kyanshouse : MonoBehaviour
     }
     void Start()
     {
-        MainPlayer = new Player("Fish", HammerheadShark);
+        MainPlayer = new Player("YellowFish", YellowFish);
         PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("Coin"));
         Coin.text = ($"Coins: {PlayerPrefs.GetInt("TotalCoins")}");
     }
 
-    public void HammerHeadshark()
+    public void KillerWhaleButton()
     {
-        MainPlayer = new Player("HammerheadShark", HammerheadShark);
+        PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 100);
+        Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+        MainPlayer = new Player("killer Whale", KillerWhale);
         Debug.Log($"PAID");
     }
 
-    public void Killerwhale()
+    public void HammerHeadButton()
     {
-        MainPlayer = new Player("killer Whale", KillerWhale);
-        Debug.Log($"PAID");
-    }
-    public void REALLLYCOOLBUTTON()
-    {
-        PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 1);
+        PlayerPrefs.SetInt("TotalCoins", PlayerPrefs.GetInt("TotalCoins") - 50);
         Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
-        MainPlayer = new Player("killer Whale", KillerWhale);
+        MainPlayer = new Player("HammerheadShark", HammerheadShark);
         Debug.Log($"PAID");
     }
 

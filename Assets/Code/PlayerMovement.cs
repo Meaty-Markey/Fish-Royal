@@ -37,50 +37,68 @@ public class PlayerMovement : MonoBehaviour
 
         time -= Time.deltaTime;
 
-        if(time < 0 )
+        if (time < 0)
         {
             Instantiate(go);
             go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
-            time = (Random.Range(0,10)); 
+            time = (Random.Range(0, 10));
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                transform.position += new Vector3(200, 0, 0);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                transform.position += new Vector3(-200, 0, 0);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                transform.position += new Vector3(0, 0, 200);
+                Debug.Log("This works");
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                transform.position += new Vector3(0, 0, -200);
+                Debug.Log("This works");
+            }
+
+
         }
 
+        void FixedUpdate()
+        {
+            Move();
+        }
 
+        void ProcessInputs()
+        {
 
+            var MoveUp = Input.GetAxisRaw("Vertical");
+            var MoveLeft = Input.GetAxisRaw("Horizontal");
+            moveDirection = new UnityEngine.Vector2(MoveLeft, MoveUp).normalized;
 
-    }
+            if (MoveLeft > 0)
+                sr.flipX = true;
+            else if (MoveLeft < 0)
+                sr.flipX = false;
 
-    void FixedUpdate()
-    {
-        Move();
-    }
+            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                transform.position += new Vector3(-100, 0, 0);
+            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                transform.position += new Vector3(100, 0, 0);
 
-    void ProcessInputs()
-    {
+            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                transform.position += new Vector3(0, 0, -100);
+            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                transform.position += new Vector3(0, 0, -100);
 
-        var MoveUp = Input.GetAxisRaw("Vertical");
-        var MoveLeft = Input.GetAxisRaw("Horizontal");
-        moveDirection = new UnityEngine.Vector2(MoveLeft, MoveUp).normalized;
+        }
 
-        if (MoveLeft > 0)
-            sr.flipX = true;
-        else if (MoveLeft < 0)
-            sr.flipX = false;
-
-        if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0 )
-            transform.position += new Vector3(-100, 0, 0);
-        else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-            transform.position += new Vector3(100, 0, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-            transform.position += new Vector3(0, -100, 0);
-        else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-            transform.position += new Vector3(0, 100, 0);
-
-    }
-
-   void Move()
-    {
-        rb.velocity = new UnityEngine.Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        void Move()
+        {
+            rb.velocity = new UnityEngine.Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D col)

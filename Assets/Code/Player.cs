@@ -15,7 +15,8 @@ public class Player
 				movespeed = 150;
 				apex_value = 5;
 				break;
-			case "Fish":
+			case "YellowFish":
+				Debug.Log("Hot");
 				movespeed = 200;
 				apex_value = 2;
 				break;

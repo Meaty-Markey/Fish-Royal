@@ -1,22 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement; 
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+namespace Code
 {
-    private int TotalCoins;
-
-    public void PlayGame ()
+    public class MainMenu : MonoBehaviour
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
-    }
+        private int TotalCoins;
 
-    public void QuitGame()
-    {
-        PlayerPrefs.DeleteKey("Coin");
-        PlayerPrefs.DeleteKey("TotalCoins");
-        Debug.Log("QUIT!");
-        Application.Quit();
+        public void PlayGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        public void QuitGame()
+        {
+            PlayerPrefs.DeleteKey("Coin");
+            PlayerPrefs.DeleteKey("TotalCoins");
+            Debug.Log("QUIT!");
+            Application.Quit();
+        }
     }
 }

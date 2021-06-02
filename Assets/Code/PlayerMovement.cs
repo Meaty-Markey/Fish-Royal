@@ -1,143 +1,130 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 
-public class PlayerMovement : MonoBehaviour
+namespace Code
 {
-    public static float moveSpeed;
-
-    public Rigidbody2D rb;
-
-    SpriteRenderer sr;
-
-    private Vector2 moveDirection;
-
-    int Coins = 0;
-
-    public TMP_Text Coin;
-
-    public GameObject go;
-
-    float time = 0; 
- 
-    void Start()
+    public class PlayerMovement : MonoBehaviour
     {
-        Coin.text = ($"Coins: {PlayerPrefs.GetInt("TotalCoins")}");
-        Coins = PlayerPrefs.GetInt("TotalCoins");
-        rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
-        moveSpeed = Kyanshouse.MainPlayer.movespeed;
-        gameObject.GetComponent<SpriteRenderer>().sprite = Kyanshouse.MainPlayer._PlayerSprite;
-    }
+        public static float moveSpeed;
 
+        public Rigidbody2D rb;
 
-    void Update()
-    {
-        ProcessInputs();
+        public TMP_Text Coin;
 
-        time -= Time.deltaTime;
+        public GameObject go;
 
-        if (time < 0)
+        private int Coins;
+
+        private Vector2 moveDirection;
+
+        private SpriteRenderer sr;
+
+        private float time;
+
+        private void Start()
         {
-            Instantiate(go);
-            go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
-            time = (Random.Range(0, 10));
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            Coin.text = $"Coins: {PlayerPrefs.GetInt("TotalCoins")}";
+            Coins = PlayerPrefs.GetInt("TotalCoins");
+            rb = GetComponent<Rigidbody2D>();
+            sr = GetComponent<SpriteRenderer>();
+            moveSpeed = Kyanshouse.MainPlayer.movespeed;
+            gameObject.GetComponent<SpriteRenderer>().sprite = Kyanshouse.MainPlayer._PlayerSprite;
+        }
+
+
+        private void Update()
+        {
+            ProcessInputs();
+
+            time -= Time.deltaTime;
+
+            if (time < 0)
             {
-                transform.position += new Vector3(200, 0, 0);
-                Debug.Log("This works");
+                Instantiate(go);
+                go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
+                time = Random.Range(0, 10);
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    transform.position += new Vector3(200, 0, 0);
+                    Debug.Log("This works");
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    transform.position += new Vector3(-200, 0, 0);
+                    Debug.Log("This works");
+                }
+                else if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    transform.position += new Vector3(0, 0, 200);
+                    Debug.Log("This works");
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    transform.position += new Vector3(0, 0, -200);
+                    Debug.Log("This works");
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+
+            void FixedUpdate()
             {
-                transform.position += new Vector3(-200, 0, 0);
-                Debug.Log("This works");
+                Move();
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
+
+            void ProcessInputs()
             {
-                transform.position += new Vector3(0, 0, 200);
-                Debug.Log("This works");
+                var MoveUp = Input.GetAxisRaw("Vertical");
+                var MoveLeft = Input.GetAxisRaw("Horizontal");
+                moveDirection = new Vector2(MoveLeft, MoveUp).normalized;
+
+                if (MoveLeft > 0)
+                    sr.flipX = true;
+                else if (MoveLeft < 0)
+                    sr.flipX = false;
+
+                if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                    transform.position += new Vector3(-100, 0, 0);
+                else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                    transform.position += new Vector3(100, 0, 0);
+
+                if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
+                    transform.position += new Vector3(0, 0, -100);
+                else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
+                    transform.position += new Vector3(0, 0, -100);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
+
+            void Move()
             {
-                transform.position += new Vector3(0, 0, -200);
-                Debug.Log("This works");
+                rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D col)
+        {
+            if (col.gameObject.tag == "Player")
+            {
+                Coins += 1;
+                Coin.text = $"Coins: {Coins}";
+                Destroy(col.gameObject);
             }
 
+            if (col.gameObject.tag == "Plant")
+            {
+                Coins += 1;
+                Coin.text = $"Coins: {Coins}";
+                Destroy(col.gameObject);
+            }
 
+            if (col.gameObject.tag == "Enemy")
+            {
+                Coins -= 1;
+                Coin.text = $"Coins: {Coins}";
+                Destroy(col.gameObject);
+                PlayerPrefs.SetInt("Coin", Coins);
+                SceneManager.LoadScene("Menu");
+            }
+
+            if (col.gameObject.tag == "Finish") SceneManager.LoadScene("Menu");
         }
-
-        void FixedUpdate()
-        {
-            Move();
-        }
-
-        void ProcessInputs()
-        {
-
-            var MoveUp = Input.GetAxisRaw("Vertical");
-            var MoveLeft = Input.GetAxisRaw("Horizontal");
-            moveDirection = new UnityEngine.Vector2(MoveLeft, MoveUp).normalized;
-
-            if (MoveLeft > 0)
-                sr.flipX = true;
-            else if (MoveLeft < 0)
-                sr.flipX = false;
-
-            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                transform.position += new Vector3(-100, 0, 0);
-            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                transform.position += new Vector3(100, 0, 0);
-
-            if (Input.GetKeyDown(KeyCode.Space) && MoveLeft < 0)
-                transform.position += new Vector3(0, 0, -100);
-            else if (Input.GetKeyDown(KeyCode.Space) && MoveUp > 0)
-                transform.position += new Vector3(0, 0, -100);
-
-        }
-
-        void Move()
-        {
-            rb.velocity = new UnityEngine.Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == ("Player"))
-        {
-            Coins += 1;
-            Coin.text = ($"Coins: {Coins}");
-             Destroy(col.gameObject);
-        }
-
-        if (col.gameObject.tag == ("Plant"))
-        {
-            Coins += 1;
-            Coin.text = ($"Coins: {Coins}");
-            Destroy(col.gameObject);
-        }
-
-        if (col.gameObject.tag == ("Enemy"))
-        {
-            Coins -= 1;
-            Coin.text = ($"Coins: {Coins}");
-            Destroy(col.gameObject);
-            PlayerPrefs.SetInt("Coin", Coins);
-            SceneManager.LoadScene("Menu");
-        }
-
-        if (col.gameObject.tag == "Finish")
-        {
-            SceneManager.LoadScene("Menu");
-        }
-
-    
-
-
-
     }
 }
-
-
-
-

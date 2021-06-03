@@ -19,7 +19,7 @@ namespace TextMesh_Pro.Scripts
                 return ch;
             }
 
-            return (char) 0;
+            return (char)0;
         }
     }
 }

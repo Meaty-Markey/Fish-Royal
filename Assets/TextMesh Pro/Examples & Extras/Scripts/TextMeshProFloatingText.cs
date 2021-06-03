@@ -51,8 +51,8 @@ namespace TextMesh_Pro.Scripts
                 //m_textMeshPro.fontSharedMaterial = Resources.Load("Fonts & Materials/LiberationSans SDF", typeof(Material)) as Material;
 
                 _mTextMeshPro.alignment = TextAlignmentOptions.Center;
-                _mTextMeshPro.color = new Color32((byte) Random.Range(0, 255), (byte) Random.Range(0, 255),
-                    (byte) Random.Range(0, 255), 255);
+                _mTextMeshPro.color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255),
+                    (byte)Random.Range(0, 255), 255);
                 _mTextMeshPro.fontSize = 24;
                 //m_textMeshPro.enableExtraPadding = true;
                 //m_textMeshPro.enableShadows = false;
@@ -71,8 +71,8 @@ namespace TextMesh_Pro.Scripts
                 _mTextMesh = _mFloatingText.AddComponent<TextMesh>();
                 _mTextMesh.font = Resources.Load<Font>("Fonts/ARIAL");
                 _mTextMesh.GetComponent<Renderer>().sharedMaterial = _mTextMesh.font.material;
-                _mTextMesh.color = new Color32((byte) Random.Range(0, 255), (byte) Random.Range(0, 255),
-                    (byte) Random.Range(0, 255), 255);
+                _mTextMesh.color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255),
+                    (byte)Random.Range(0, 255), 255);
                 _mTextMesh.anchor = TextAnchor.LowerCenter;
                 _mTextMesh.fontSize = 24;
 
@@ -100,31 +100,33 @@ namespace TextMesh_Pro.Scripts
 
         public IEnumerator DisplayTextMeshProFloatingText()
         {
-            var countDuration = 2.0f; // How long is the countdown alive.    
-            var startingCount = Random.Range(5f, 20f); // At what number is the counter starting at.
-            var currentCount = startingCount;
+            float countDuration = 2.0f; // How long is the countdown alive.    
+            float startingCount = Random.Range(5f, 20f); // At what number is the counter starting at.
+            float currentCount = startingCount;
 
-            var startPos = _mFloatingTextTransform.position;
+            Vector3 startPos = _mFloatingTextTransform.position;
             Color32 startColor = _mTextMeshPro.color;
             float alpha = 255;
-            var intCounter = 0;
+            int intCounter = 0;
 
 
-            var fadeDuration = 3 / startingCount * countDuration;
+            float fadeDuration = 3 / startingCount * countDuration;
 
             while (currentCount > 0)
             {
                 currentCount -= Time.deltaTime / countDuration * startingCount;
 
                 if (currentCount <= 3)
+                {
                     //Debug.Log("Fading Counter ... " + current_Count.ToString("f2"));
                     alpha = Mathf.Clamp(alpha - Time.deltaTime / fadeDuration * 255, 0, 255);
+                }
 
-                intCounter = (int) currentCount;
+                intCounter = (int)currentCount;
                 _mTextMeshPro.text = intCounter.ToString();
                 //m_textMeshPro.SetText("{0}", (int)current_Count);
 
-                _mTextMeshPro.color = new Color32(startColor.r, startColor.g, startColor.b, (byte) alpha);
+                _mTextMeshPro.color = new Color32(startColor.r, startColor.g, startColor.b, (byte)alpha);
 
                 // Move the floating text upward each update
                 _mFloatingTextTransform.position += new Vector3(0, startingCount * Time.deltaTime, 0);
@@ -136,7 +138,7 @@ namespace TextMesh_Pro.Scripts
                     _lastPos = _mCameraTransform.position;
                     _lastRotation = _mCameraTransform.rotation;
                     _mFloatingTextTransform.rotation = _lastRotation;
-                    var dir = _mTransform.position - _lastPos;
+                    Vector3 dir = _mTransform.position - _lastPos;
                     _mTransform.forward = new Vector3(dir.x, 0, dir.z);
                 }
 
@@ -155,30 +157,32 @@ namespace TextMesh_Pro.Scripts
 
         public IEnumerator DisplayTextMeshFloatingText()
         {
-            var countDuration = 2.0f; // How long is the countdown alive.    
-            var startingCount = Random.Range(5f, 20f); // At what number is the counter starting at.
-            var currentCount = startingCount;
+            float countDuration = 2.0f; // How long is the countdown alive.    
+            float startingCount = Random.Range(5f, 20f); // At what number is the counter starting at.
+            float currentCount = startingCount;
 
-            var startPos = _mFloatingTextTransform.position;
+            Vector3 startPos = _mFloatingTextTransform.position;
             Color32 startColor = _mTextMesh.color;
             float alpha = 255;
-            var intCounter = 0;
+            int intCounter = 0;
 
-            var fadeDuration = 3 / startingCount * countDuration;
+            float fadeDuration = 3 / startingCount * countDuration;
 
             while (currentCount > 0)
             {
                 currentCount -= Time.deltaTime / countDuration * startingCount;
 
                 if (currentCount <= 3)
+                {
                     //Debug.Log("Fading Counter ... " + current_Count.ToString("f2"));
                     alpha = Mathf.Clamp(alpha - Time.deltaTime / fadeDuration * 255, 0, 255);
+                }
 
-                intCounter = (int) currentCount;
+                intCounter = (int)currentCount;
                 _mTextMesh.text = intCounter.ToString();
                 //Debug.Log("Current Count:" + current_Count.ToString("f2"));
 
-                _mTextMesh.color = new Color32(startColor.r, startColor.g, startColor.b, (byte) alpha);
+                _mTextMesh.color = new Color32(startColor.r, startColor.g, startColor.b, (byte)alpha);
 
                 // Move the floating text upward each update
                 _mFloatingTextTransform.position += new Vector3(0, startingCount * Time.deltaTime, 0);
@@ -190,7 +194,7 @@ namespace TextMesh_Pro.Scripts
                     _lastPos = _mCameraTransform.position;
                     _lastRotation = _mCameraTransform.rotation;
                     _mFloatingTextTransform.rotation = _lastRotation;
-                    var dir = _mTransform.position - _lastPos;
+                    Vector3 dir = _mTransform.position - _lastPos;
                     _mTransform.forward = new Vector3(dir.x, 0, dir.z);
                 }
 

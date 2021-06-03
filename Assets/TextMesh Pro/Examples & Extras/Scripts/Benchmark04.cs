@@ -22,22 +22,26 @@ namespace TextMesh_Pro.Scripts
             _mTransform = transform;
 
             float lineHeight = 0;
-            var orthoSize = Camera.main.orthographicSize = Screen.height / 2;
-            var ratio = (float) Screen.width / Screen.height;
+            float orthoSize = Camera.main.orthographicSize = Screen.height / 2;
+            float ratio = (float)Screen.width / Screen.height;
 
-            for (var i = minPointSize; i <= maxPointSize; i += steps)
+            for (int i = minPointSize; i <= maxPointSize; i += steps)
+            {
                 if (spawnType == 0)
                 {
                     // TextMesh Pro Implementation
-                    var go = new GameObject("Text - " + i + " Pts");
+                    GameObject go = new GameObject("Text - " + i + " Pts");
 
-                    if (lineHeight > orthoSize * 2) return;
+                    if (lineHeight > orthoSize * 2)
+                    {
+                        return;
+                    }
 
                     go.transform.position = _mTransform.position +
                                             new Vector3(ratio * -orthoSize * 0.975f, orthoSize * 0.975f - lineHeight,
                                                 0);
 
-                    var textMeshPro = go.AddComponent<TextMeshPro>();
+                    TextMeshPro textMeshPro = go.AddComponent<TextMeshPro>();
 
                     //textMeshPro.fontSharedMaterial = material;
                     //textMeshPro.font = Resources.Load("Fonts & Materials/LiberationSans SDF", typeof(TextMeshProFont)) as TextMeshProFont;
@@ -54,6 +58,7 @@ namespace TextMesh_Pro.Scripts
 
                     lineHeight += i;
                 }
+            }
         }
     }
 }

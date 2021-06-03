@@ -35,12 +35,14 @@ namespace TextMesh_Pro.Scripts
         private void Awake()
         {
             if (!enabled)
+            {
                 return;
+            }
 
             _mCamera = Camera.main;
             Application.targetFrameRate = -1;
 
-            var frameCounter = new GameObject("Frame Counter");
+            GameObject frameCounter = new GameObject("Frame Counter");
 
             _mTextMeshPro = frameCounter.AddComponent<TextMeshPro>();
             _mTextMeshPro.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
@@ -77,25 +79,33 @@ namespace TextMesh_Pro.Scripts
         private void Update()
         {
             if (anchorPosition != _lastAnchorPosition)
+            {
                 Set_FrameCounter_Position(anchorPosition);
+            }
 
             _lastAnchorPosition = anchorPosition;
 
             _mFrames += 1;
-            var timeNow = Time.realtimeSinceStartup;
+            float timeNow = Time.realtimeSinceStartup;
 
             if (timeNow > _mLastInterval + updateInterval)
             {
                 // display two fractional digits (f2 format)
-                var fps = _mFrames / (timeNow - _mLastInterval);
-                var ms = 1000.0f / Mathf.Max(fps, 0.00001f);
+                float fps = _mFrames / (timeNow - _mLastInterval);
+                float ms = 1000.0f / Mathf.Max(fps, 0.00001f);
 
                 if (fps < 30)
+                {
                     _htmlColorTag = "<color=yellow>";
+                }
                 else if (fps < 10)
+                {
                     _htmlColorTag = "<color=red>";
+                }
                 else
+                {
                     _htmlColorTag = "<color=green>";
+                }
 
                 //string format = System.String.Format(htmlColorTag + "{0:F2} </color>FPS \n{1:F2} <#8080ff>MS",fps, ms);
                 //m_TextMeshPro.text = format;

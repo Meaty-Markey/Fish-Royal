@@ -31,11 +31,13 @@ namespace TextMesh_Pro.Scripts
         private void Awake()
         {
             if (!enabled)
+            {
                 return;
+            }
 
             _mCamera = Camera.main;
 
-            var frameCounter = new GameObject("Frame Counter");
+            GameObject frameCounter = new GameObject("Frame Counter");
             _mFrameCounterTransform = frameCounter.transform;
             _mFrameCounterTransform.parent = _mCamera.transform;
             _mFrameCounterTransform.localRotation = Quaternion.identity;

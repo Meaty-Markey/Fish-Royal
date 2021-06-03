@@ -8,7 +8,7 @@ namespace Code
     {
         public readonly float Movespeed;
         public readonly Sprite PlayerSprite;
-        private float _apexValue;
+        private readonly float _apexValue;
 
         public Player(string playername, Sprite playerSprite)
         {

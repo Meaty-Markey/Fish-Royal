@@ -49,10 +49,10 @@ namespace TextMesh_Pro.Scripts
         {
             textComponent.ForceMeshUpdate();
 
-            var textInfo = textComponent.textInfo;
+            TMP_TextInfo textInfo = textComponent.textInfo;
 
-            var totalVisibleCharacters = textInfo.characterCount; // Get # of Visible Character in text object
-            var visibleCount = 0;
+            int totalVisibleCharacters = textInfo.characterCount; // Get # of Visible Character in text object
+            int visibleCount = 0;
 
             while (true)
             {
@@ -85,12 +85,12 @@ namespace TextMesh_Pro.Scripts
         {
             textComponent.ForceMeshUpdate();
 
-            var totalWordCount = textComponent.textInfo.wordCount;
-            var totalVisibleCharacters =
+            int totalWordCount = textComponent.textInfo.wordCount;
+            int totalVisibleCharacters =
                 textComponent.textInfo.characterCount; // Get # of Visible Character in text object
-            var counter = 0;
-            var currentWord = 0;
-            var visibleCount = 0;
+            int counter = 0;
+            int currentWord = 0;
+            int visibleCount = 0;
 
             while (true)
             {
@@ -98,16 +98,25 @@ namespace TextMesh_Pro.Scripts
 
                 // Get last character index for the current word.
                 if (currentWord == 0) // Display no words.
+                {
                     visibleCount = 0;
+                }
                 else if (currentWord < totalWordCount) // Display all other words with the exception of the last one.
+                {
                     visibleCount = textComponent.textInfo.wordInfo[currentWord - 1].lastCharacterIndex + 1;
+                }
                 else if (currentWord == totalWordCount) // Display last word and all remaining characters.
+                {
                     visibleCount = totalVisibleCharacters;
+                }
 
                 textComponent.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
-                if (visibleCount >= totalVisibleCharacters) yield return new WaitForSeconds(1.0f);
+                if (visibleCount >= totalVisibleCharacters)
+                {
+                    yield return new WaitForSeconds(1.0f);
+                }
 
                 counter += 1;
 

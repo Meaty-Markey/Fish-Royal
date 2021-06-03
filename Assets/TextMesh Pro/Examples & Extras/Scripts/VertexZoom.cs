@@ -47,7 +47,9 @@ namespace TextMesh_Pro.Scripts
         private void ON_TEXT_CHANGED(Object obj)
         {
             if (obj == _mTextComponent)
+            {
                 _hasTextChanged = true;
+            }
         }
 
         /// <summary>
@@ -60,14 +62,14 @@ namespace TextMesh_Pro.Scripts
             // Alternatively, we could yield and wait until the end of the frame when the text object will be generated.
             _mTextComponent.ForceMeshUpdate();
 
-            var textInfo = _mTextComponent.textInfo;
+            TMP_TextInfo textInfo = _mTextComponent.textInfo;
 
             Matrix4x4 matrix;
-            var cachedMeshInfoVertexData = textInfo.CopyMeshInfoVertexData();
+            TMP_MeshInfo[] cachedMeshInfoVertexData = textInfo.CopyMeshInfoVertexData();
 
             // Allocations for sorting of the modified scales
-            var modifiedCharScale = new List<float>();
-            var scaleSortingOrder = new List<int>();
+            List<float> modifiedCharScale = new List<float>();
+            List<int> scaleSortingOrder = new List<int>();
 
             _hasTextChanged = true;
 
@@ -82,7 +84,7 @@ namespace TextMesh_Pro.Scripts
                     _hasTextChanged = false;
                 }
 
-                var characterCount = textInfo.characterCount;
+                int characterCount = textInfo.characterCount;
 
                 // If No Characters then just yield and wait for some text to be added
                 if (characterCount == 0)
@@ -95,22 +97,24 @@ namespace TextMesh_Pro.Scripts
                 modifiedCharScale.Clear();
                 scaleSortingOrder.Clear();
 
-                for (var i = 0; i < characterCount; i++)
+                for (int i = 0; i < characterCount; i++)
                 {
-                    var charInfo = textInfo.characterInfo[i];
+                    TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
 
                     // Skip characters that are not visible and thus have no geometry to manipulate.
                     if (!charInfo.isVisible)
+                    {
                         continue;
+                    }
 
                     // Get the index of the material used by the current character.
-                    var materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
+                    int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
 
                     // Get the index of the first vertex used by this text element.
-                    var vertexIndex = textInfo.characterInfo[i].vertexIndex;
+                    int vertexIndex = textInfo.characterInfo[i].vertexIndex;
 
                     // Get the cached vertices of the mesh used by this text element (character or sprite).
-                    var sourceVertices = cachedMeshInfoVertexData[materialIndex].vertices;
+                    Vector3[] sourceVertices = cachedMeshInfoVertexData[materialIndex].vertices;
 
                     // Determine the center point of each character at the baseline.
                     //Vector2 charMidBasline = new Vector2((sourceVertices[vertexIndex + 0].x + sourceVertices[vertexIndex + 2].x) / 2, charInfo.baseLine);
@@ -121,7 +125,7 @@ namespace TextMesh_Pro.Scripts
                     // This is needed so the matrix TRS is applied at the origin for each character.
                     Vector3 offset = charMidBasline;
 
-                    var destinationVertices = textInfo.meshInfo[materialIndex].vertices;
+                    Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
 
                     destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
                     destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
@@ -131,7 +135,7 @@ namespace TextMesh_Pro.Scripts
                     //Vector3 jitterOffset = new Vector3(Random.Range(-.25f, .25f), Random.Range(-.25f, .25f), 0);
 
                     // Determine the random scale change for each character.
-                    var randomScale = Random.Range(1f, 1.5f);
+                    float randomScale = Random.Range(1f, 1.5f);
 
                     // Add modified scale and index
                     modifiedCharScale.Add(randomScale);
@@ -156,8 +160,8 @@ namespace TextMesh_Pro.Scripts
                     destinationVertices[vertexIndex + 3] += offset;
 
                     // Restore Source UVS which have been modified by the sorting
-                    var sourceUVs0 = cachedMeshInfoVertexData[materialIndex].uvs0;
-                    var destinationUVs0 = textInfo.meshInfo[materialIndex].uvs0;
+                    Vector2[] sourceUVs0 = cachedMeshInfoVertexData[materialIndex].uvs0;
+                    Vector2[] destinationUVs0 = textInfo.meshInfo[materialIndex].uvs0;
 
                     destinationUVs0[vertexIndex + 0] = sourceUVs0[vertexIndex + 0];
                     destinationUVs0[vertexIndex + 1] = sourceUVs0[vertexIndex + 1];
@@ -165,8 +169,8 @@ namespace TextMesh_Pro.Scripts
                     destinationUVs0[vertexIndex + 3] = sourceUVs0[vertexIndex + 3];
 
                     // Restore Source Vertex Colors
-                    var sourceColors32 = cachedMeshInfoVertexData[materialIndex].colors32;
-                    var destinationColors32 = textInfo.meshInfo[materialIndex].colors32;
+                    Color32[] sourceColors32 = cachedMeshInfoVertexData[materialIndex].colors32;
+                    Color32[] destinationColors32 = textInfo.meshInfo[materialIndex].colors32;
 
                     destinationColors32[vertexIndex + 0] = sourceColors32[vertexIndex + 0];
                     destinationColors32[vertexIndex + 1] = sourceColors32[vertexIndex + 1];
@@ -175,7 +179,7 @@ namespace TextMesh_Pro.Scripts
                 }
 
                 // Push changes into meshes
-                for (var i = 0; i < textInfo.meshInfo.Length; i++)
+                for (int i = 0; i < textInfo.meshInfo.Length; i++)
                 {
                     //// Sort Quads based modified scale
                     scaleSortingOrder.Sort((a, b) => modifiedCharScale[a].CompareTo(modifiedCharScale[b]));

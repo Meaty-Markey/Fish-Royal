@@ -5,7 +5,7 @@ namespace Code
 {
     public class MainMenu : MonoBehaviour
     {
-        private int _totalCoins;
+        private readonly int _totalCoins;
 
         public void PlayGame()
         {

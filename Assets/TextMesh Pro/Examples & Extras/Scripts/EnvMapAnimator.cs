@@ -25,7 +25,7 @@ namespace TextMesh_Pro.Scripts
         // Use this for initialization
         private IEnumerator Start()
         {
-            var matrix = new Matrix4x4();
+            Matrix4x4 matrix = new Matrix4x4();
 
             while (true)
             {

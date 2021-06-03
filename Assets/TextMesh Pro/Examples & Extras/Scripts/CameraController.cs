@@ -73,12 +73,18 @@ namespace TextMesh_Pro.Scripts
         private void Awake()
         {
             if (QualitySettings.vSyncCount > 0)
+            {
                 Application.targetFrameRate = 60;
+            }
             else
+            {
                 Application.targetFrameRate = -1;
+            }
 
             if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.Android)
+            {
                 Input.simulateMouseWithTouches = false;
+            }
 
             _cameraTransform = transform;
             _previousSmoothing = movementSmoothing;
@@ -106,27 +112,39 @@ namespace TextMesh_Pro.Scripts
             if (cameraTarget != null)
             {
                 if (cameraMode == CameraModes.Isometric)
+                {
                     _desiredPosition = cameraTarget.position + Quaternion.Euler(elevationAngle, orbitalAngle, 0f) *
                         new Vector3(0, 0, -followDistance);
+                }
                 else if (cameraMode == CameraModes.Follow)
+                {
                     _desiredPosition = cameraTarget.position + cameraTarget.TransformDirection(
                         Quaternion.Euler(elevationAngle, orbitalAngle, 0f) * new Vector3(0, 0, -followDistance));
+                }
 
                 if (movementSmoothing)
+                {
                     // Using Smoothing
                     _cameraTransform.position = Vector3.SmoothDamp(_cameraTransform.position, _desiredPosition,
                         ref _currentVelocity, movementSmoothingValue * Time.fixedDeltaTime);
+                }
                 //cameraTransform.position = Vector3.Lerp(cameraTransform.position, desiredPosition, Time.deltaTime * 5.0f);
                 else
+                {
                     // Not using Smoothing
                     _cameraTransform.position = _desiredPosition;
+                }
 
                 if (rotationSmoothing)
+                {
                     _cameraTransform.rotation = Quaternion.Lerp(_cameraTransform.rotation,
                         Quaternion.LookRotation(cameraTarget.position - _cameraTransform.position),
                         rotationSmoothingValue * Time.deltaTime);
+                }
                 else
+                {
                     _cameraTransform.LookAt(cameraTarget);
+                }
             }
         }
 
@@ -145,13 +163,19 @@ namespace TextMesh_Pro.Scripts
                 _mouseWheel *= 10;
 
                 if (Input.GetKeyDown(KeyCode.I))
+                {
                     cameraMode = CameraModes.Isometric;
+                }
 
                 if (Input.GetKeyDown(KeyCode.F))
+                {
                     cameraMode = CameraModes.Follow;
+                }
 
                 if (Input.GetKeyDown(KeyCode.S))
+                {
                     movementSmoothing = !movementSmoothing;
+                }
 
 
                 // Check for right mouse button to change camera follow and elevation angle
@@ -171,16 +195,21 @@ namespace TextMesh_Pro.Scripts
                     {
                         orbitalAngle += _mouseX * moveSensitivity;
                         if (orbitalAngle > 360)
+                        {
                             orbitalAngle -= 360;
+                        }
+
                         if (orbitalAngle < 0)
+                        {
                             orbitalAngle += 360;
+                        }
                     }
                 }
 
                 // Get Input from Mobile Device
                 if (touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved)
                 {
-                    var deltaPosition = Input.GetTouch(0).deltaPosition;
+                    Vector2 deltaPosition = Input.GetTouch(0).deltaPosition;
 
                     // Handle elevation changes
                     if (deltaPosition.y > 0.01f || deltaPosition.y < -0.01f)
@@ -196,19 +225,23 @@ namespace TextMesh_Pro.Scripts
                     {
                         orbitalAngle += deltaPosition.x * 0.1f;
                         if (orbitalAngle > 360)
+                        {
                             orbitalAngle -= 360;
+                        }
+
                         if (orbitalAngle < 0)
+                        {
                             orbitalAngle += 360;
+                        }
                     }
                 }
 
                 // Check for left mouse button to select a new CameraTarget or to reset Follow position
                 if (Input.GetMouseButton(0))
                 {
-                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                    if (Physics.Raycast(ray, out hit, 300, (1 << 10) | (1 << 11) | (1 << 12) | (1 << 14)))
+                    if (Physics.Raycast(ray, out RaycastHit hit, 300, (1 << 10) | (1 << 11) | (1 << 12) | (1 << 14)))
                     {
                         if (hit.transform == cameraTarget)
                         {
@@ -260,16 +293,16 @@ namespace TextMesh_Pro.Scripts
             // Check Pinching to Zoom in - out on Mobile device
             if (touchCount == 2)
             {
-                var touch0 = Input.GetTouch(0);
-                var touch1 = Input.GetTouch(1);
+                Touch touch0 = Input.GetTouch(0);
+                Touch touch1 = Input.GetTouch(1);
 
-                var touch0PrevPos = touch0.position - touch0.deltaPosition;
-                var touch1PrevPos = touch1.position - touch1.deltaPosition;
+                Vector2 touch0PrevPos = touch0.position - touch0.deltaPosition;
+                Vector2 touch1PrevPos = touch1.position - touch1.deltaPosition;
 
-                var prevTouchDelta = (touch0PrevPos - touch1PrevPos).magnitude;
-                var touchDelta = (touch0.position - touch1.position).magnitude;
+                float prevTouchDelta = (touch0PrevPos - touch1PrevPos).magnitude;
+                float touchDelta = (touch0.position - touch1.position).magnitude;
 
-                var zoomDelta = prevTouchDelta - touchDelta;
+                float zoomDelta = prevTouchDelta - touchDelta;
 
                 if (zoomDelta > 0.01f || zoomDelta < -0.01f)
                 {

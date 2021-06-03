@@ -29,13 +29,16 @@ namespace TextMesh_Pro.Scripts
             _mIsHoveringObject = false;
 
             if (TMP_TextUtilities.IsIntersectingRectTransform(_mTextMeshPro.rectTransform, Input.mousePosition,
-                Camera.main)) _mIsHoveringObject = true;
+                Camera.main))
+            {
+                _mIsHoveringObject = true;
+            }
 
             if (_mIsHoveringObject)
             {
                 #region Example of Character Selection
 
-                var charIndex =
+                int charIndex =
                     TMP_TextUtilities.FindIntersectingCharacter(_mTextMeshPro, Input.mousePosition, Camera.main, true);
                 if (charIndex != -1 && charIndex != _mLastCharIndex &&
                     (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
@@ -44,14 +47,14 @@ namespace TextMesh_Pro.Scripts
 
                     _mLastCharIndex = charIndex;
 
-                    var meshIndex = _mTextMeshPro.textInfo.characterInfo[charIndex].materialReferenceIndex;
+                    int meshIndex = _mTextMeshPro.textInfo.characterInfo[charIndex].materialReferenceIndex;
 
-                    var vertexIndex = _mTextMeshPro.textInfo.characterInfo[charIndex].vertexIndex;
+                    int vertexIndex = _mTextMeshPro.textInfo.characterInfo[charIndex].vertexIndex;
 
-                    var c = new Color32((byte) Random.Range(0, 255), (byte) Random.Range(0, 255),
-                        (byte) Random.Range(0, 255), 255);
+                    Color32 c = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255),
+                        (byte)Random.Range(0, 255), 255);
 
-                    var vertexColors = _mTextMeshPro.textInfo.meshInfo[meshIndex].colors32;
+                    Color32[] vertexColors = _mTextMeshPro.textInfo.meshInfo[meshIndex].colors32;
 
                     vertexColors[vertexIndex + 0] = c;
                     vertexColors[vertexIndex + 1] = c;
@@ -67,27 +70,28 @@ namespace TextMesh_Pro.Scripts
                 #region Example of Link Handling
 
                 // Check if mouse intersects with any links.
-                var linkIndex = TMP_TextUtilities.FindIntersectingLink(_mTextMeshPro, Input.mousePosition, _mCamera);
+                int linkIndex = TMP_TextUtilities.FindIntersectingLink(_mTextMeshPro, Input.mousePosition, _mCamera);
 
                 // Clear previous link selection if one existed.
                 if (linkIndex == -1 && _mSelectedLink != -1 || linkIndex != _mSelectedLink)
+                {
                     //m_TextPopup_RectTransform.gameObject.SetActive(false);
                     _mSelectedLink = -1;
+                }
 
                 // Handle new Link selection.
                 if (linkIndex != -1 && linkIndex != _mSelectedLink)
                 {
                     _mSelectedLink = linkIndex;
 
-                    var linkInfo = _mTextMeshPro.textInfo.linkInfo[linkIndex];
+                    TMP_LinkInfo linkInfo = _mTextMeshPro.textInfo.linkInfo[linkIndex];
 
                     // The following provides an example of how to access the link properties.
                     //Debug.Log("Link ID: \"" + linkInfo.GetLinkID() + "\"   Link Text: \"" + linkInfo.GetLinkText() + "\""); // Example of how to retrieve the Link ID and Link Text.
 
-                    Vector3 worldPointInRectangle;
 
                     RectTransformUtility.ScreenPointToWorldPointInRectangle(_mTextMeshPro.rectTransform,
-                        Input.mousePosition, _mCamera, out worldPointInRectangle);
+                        Input.mousePosition, _mCamera, out Vector3 worldPointInRectangle);
 
                     switch (linkInfo.GetLinkID())
                     {
@@ -110,26 +114,26 @@ namespace TextMesh_Pro.Scripts
                 #region Example of Word Selection
 
                 // Check if Mouse intersects any words and if so assign a random color to that word.
-                var wordIndex = TMP_TextUtilities.FindIntersectingWord(_mTextMeshPro, Input.mousePosition, Camera.main);
+                int wordIndex = TMP_TextUtilities.FindIntersectingWord(_mTextMeshPro, Input.mousePosition, Camera.main);
                 if (wordIndex != -1 && wordIndex != _mLastWordIndex)
                 {
                     _mLastWordIndex = wordIndex;
 
-                    var wInfo = _mTextMeshPro.textInfo.wordInfo[wordIndex];
+                    TMP_WordInfo wInfo = _mTextMeshPro.textInfo.wordInfo[wordIndex];
 
-                    var wordPos = _mTextMeshPro.transform.TransformPoint(_mTextMeshPro.textInfo
+                    Vector3 wordPos = _mTextMeshPro.transform.TransformPoint(_mTextMeshPro.textInfo
                         .characterInfo[wInfo.firstCharacterIndex].bottomLeft);
                     wordPos = Camera.main.WorldToScreenPoint(wordPos);
 
                     //Debug.Log("Mouse Position: " + Input.mousePosition.ToString("f3") + "  Word Position: " + wordPOS.ToString("f3"));
 
-                    var vertexColors = _mTextMeshPro.textInfo.meshInfo[0].colors32;
+                    Color32[] vertexColors = _mTextMeshPro.textInfo.meshInfo[0].colors32;
 
-                    var c = new Color32((byte) Random.Range(0, 255), (byte) Random.Range(0, 255),
-                        (byte) Random.Range(0, 255), 255);
-                    for (var i = 0; i < wInfo.characterCount; i++)
+                    Color32 c = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255),
+                        (byte)Random.Range(0, 255), 255);
+                    for (int i = 0; i < wInfo.characterCount; i++)
                     {
-                        var vertexIndex = _mTextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i]
+                        int vertexIndex = _mTextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i]
                             .vertexIndex;
 
                         vertexColors[vertexIndex + 0] = c;

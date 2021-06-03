@@ -44,7 +44,9 @@ namespace TextMesh_Pro.Scripts
         private void ON_TEXT_CHANGED(Object obj)
         {
             if (obj == _mTextComponent)
+            {
                 _hasTextChanged = true;
+            }
         }
 
         /// <summary>
@@ -57,23 +59,23 @@ namespace TextMesh_Pro.Scripts
             // Alternatively, we could yield and wait until the end of the frame when the text object will be generated.
             _mTextComponent.ForceMeshUpdate();
 
-            var textInfo = _mTextComponent.textInfo;
+            TMP_TextInfo textInfo = _mTextComponent.textInfo;
 
             Matrix4x4 matrix;
 
-            var loopCount = 0;
+            int loopCount = 0;
             _hasTextChanged = true;
 
             // Create an Array which contains pre-computed Angle Ranges and Speeds for a bunch of characters.
-            var vertexAnim = new VertexAnim[1024];
-            for (var i = 0; i < 1024; i++)
+            VertexAnim[] vertexAnim = new VertexAnim[1024];
+            for (int i = 0; i < 1024; i++)
             {
                 vertexAnim[i].AngleRange = Random.Range(10f, 25f);
                 vertexAnim[i].Speed = Random.Range(1f, 3f);
             }
 
             // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
-            var cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
+            TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
             while (true)
             {
@@ -86,7 +88,7 @@ namespace TextMesh_Pro.Scripts
                     _hasTextChanged = false;
                 }
 
-                var characterCount = textInfo.characterCount;
+                int characterCount = textInfo.characterCount;
 
                 // If No Characters then just yield and wait for some text to be added
                 if (characterCount == 0)
@@ -96,25 +98,27 @@ namespace TextMesh_Pro.Scripts
                 }
 
 
-                for (var i = 0; i < characterCount; i++)
+                for (int i = 0; i < characterCount; i++)
                 {
-                    var charInfo = textInfo.characterInfo[i];
+                    TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
 
                     // Skip characters that are not visible and thus have no geometry to manipulate.
                     if (!charInfo.isVisible)
+                    {
                         continue;
+                    }
 
                     // Retrieve the pre-computed animation data for the given character.
-                    var vertAnim = vertexAnim[i];
+                    VertexAnim vertAnim = vertexAnim[i];
 
                     // Get the index of the material used by the current character.
-                    var materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
+                    int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
 
                     // Get the index of the first vertex used by this text element.
-                    var vertexIndex = textInfo.characterInfo[i].vertexIndex;
+                    int vertexIndex = textInfo.characterInfo[i].vertexIndex;
 
                     // Get the cached vertices of the mesh used by this text element (character or sprite).
-                    var sourceVertices = cachedMeshInfo[materialIndex].vertices;
+                    Vector3[] sourceVertices = cachedMeshInfo[materialIndex].vertices;
 
                     // Determine the center point of each character at the baseline.
                     //Vector2 charMidBasline = new Vector2((sourceVertices[vertexIndex + 0].x + sourceVertices[vertexIndex + 2].x) / 2, charInfo.baseLine);
@@ -125,7 +129,7 @@ namespace TextMesh_Pro.Scripts
                     // This is needed so the matrix TRS is applied at the origin for each character.
                     Vector3 offset = charMidBasline;
 
-                    var destinationVertices = textInfo.meshInfo[materialIndex].vertices;
+                    Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
 
                     destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
                     destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
@@ -134,7 +138,7 @@ namespace TextMesh_Pro.Scripts
 
                     vertAnim.Angle = Mathf.SmoothStep(-vertAnim.AngleRange, vertAnim.AngleRange,
                         Mathf.PingPong(loopCount / 25f * vertAnim.Speed, 1f));
-                    var jitterOffset = new Vector3(Random.Range(-.25f, .25f), Random.Range(-.25f, .25f), 0);
+                    Vector3 jitterOffset = new Vector3(Random.Range(-.25f, .25f), Random.Range(-.25f, .25f), 0);
 
                     matrix = Matrix4x4.TRS(jitterOffset * curveScale,
                         Quaternion.Euler(0, 0, Random.Range(-5f, 5f) * angleMultiplier), Vector3.one);
@@ -157,7 +161,7 @@ namespace TextMesh_Pro.Scripts
                 }
 
                 // Push changes into meshes
-                for (var i = 0; i < textInfo.meshInfo.Length; i++)
+                for (int i = 0; i < textInfo.meshInfo.Length; i++)
                 {
                     textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
                     _mTextComponent.UpdateGeometry(textInfo.meshInfo[i].mesh, i);

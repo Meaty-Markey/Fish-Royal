@@ -38,7 +38,11 @@ namespace Code
 
             _time -= Time.deltaTime;
 
-            if (!(_time < 0)) return;
+            if (!(_time < 0))
+            {
+                return;
+            }
+
             Instantiate(go);
             go.transform.position = new Vector2(Random.Range(0, 0), Random.Range(0, 0));
             _time = Random.Range(0, 10);
@@ -93,31 +97,47 @@ namespace Code
                 Destroy(col.gameObject);
                 PlayerPrefs.SetInt("Coin", _coins);
                 SceneManager.LoadScene("Menu");
+
             }
 
-            if (col.gameObject.CompareTag("Finish")) SceneManager.LoadScene("Menu");
+            if (col.gameObject.CompareTag("Finish"))
+            {
+                SceneManager.LoadScene("Menu");
+            }
         }
 
         private void ProcessInputs()
         {
-            var moveUp = Input.GetAxisRaw("Vertical");
-            var moveLeft = Input.GetAxisRaw("Horizontal");
+            float moveUp = Input.GetAxisRaw("Vertical");
+            float moveLeft = Input.GetAxisRaw("Horizontal");
             _moveDirection = new Vector2(moveLeft, moveUp).normalized;
 
             if (moveLeft > 0)
+            {
                 _sr.flipX = true;
+            }
             else if (moveLeft < 0)
+            {
                 _sr.flipX = false;
+            }
 
             if (Input.GetKeyDown(KeyCode.Space) && moveLeft < 0)
+            {
                 transform.position += new Vector3(-100, 0, 0);
+            }
             else if (Input.GetKeyDown(KeyCode.Space) && moveUp > 0)
+            {
                 transform.position += new Vector3(100, 0, 0);
+            }
 
             if (Input.GetKeyDown(KeyCode.Space) && moveLeft < 0)
+            {
                 transform.position += new Vector3(0, 0, -100);
+            }
             else if (Input.GetKeyDown(KeyCode.Space) && moveUp > 0)
+            {
                 transform.position += new Vector3(0, 0, -100);
+            }
         }
 
         private void Move()

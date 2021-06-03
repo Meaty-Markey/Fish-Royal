@@ -21,7 +21,7 @@ namespace TextMesh_Pro.Scripts
 
         private Material _mMaterial01;
         private Material _mMaterial02;
-        private TextContainer _mTextContainer;
+        private readonly TextContainer _mTextContainer;
         private TextMesh _mTextMesh;
 
         private TextMeshPro _mTextMeshPro;
@@ -37,7 +37,9 @@ namespace TextMesh_Pro.Scripts
                 //m_textMeshPro.anchorDampening = true;
 
                 if (tmProFont != null)
+                {
                     _mTextMeshPro.font = tmProFont;
+                }
 
                 //m_textMeshPro.font = Resources.Load("Fonts & Materials/Anton SDF", typeof(TextMeshProFont)) as TextMeshProFont; // Make sure the Anton SDF exists before calling this...
                 //m_textMeshPro.fontSharedMaterial = Resources.Load("Fonts & Materials/Anton SDF", typeof(Material)) as Material; // Same as above make sure this material exists.
@@ -82,15 +84,17 @@ namespace TextMesh_Pro.Scripts
             }
 
 
-            for (var i = 0; i <= 1000000; i++)
+            for (int i = 0; i <= 1000000; i++)
             {
                 if (benchmarkType == 0)
                 {
                     _mTextMeshPro.SetText(Label01, i % 1000);
                     if (i % 1000 == 999)
+                    {
                         _mTextMeshPro.fontSharedMaterial = _mTextMeshPro.fontSharedMaterial == _mMaterial01
                             ? _mTextMeshPro.fontSharedMaterial = _mMaterial02
                             : _mTextMeshPro.fontSharedMaterial = _mMaterial01;
+                    }
                 }
                 else if (benchmarkType == 1)
                 {

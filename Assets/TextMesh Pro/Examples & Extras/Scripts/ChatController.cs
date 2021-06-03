@@ -33,7 +33,7 @@ namespace TextMesh_Pro.Scripts
             // Clear Input Field
             tmpChatInput.text = string.Empty;
 
-            var timeNow = DateTime.Now;
+            DateTime timeNow = DateTime.Now;
 
             tmpChatOutput.text += "[<#FFFF80>" + timeNow.Hour.ToString("d2") + ":" + timeNow.Minute.ToString("d2") +
                                   ":" +

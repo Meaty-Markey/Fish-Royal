@@ -29,20 +29,27 @@ namespace Code
         public void Update()
         {
             _currentTime += Time.deltaTime;
-            if (!(_currentTime >= _countdownTimer)) return;
+            if (!(_currentTime >= _countdownTimer))
+            {
+                return;
+            }
+
             StartCoroutine(Move(new Vector3(Random.Range(_left, _right), Random.Range(_down, _up), 0)));
             _currentTime = 0;
         }
 
         private IEnumerator Move(Vector3 newpos)
         {
-            var timeSinceStart = 0f;
+            float timeSinceStart = 0f;
             while (true)
             {
                 timeSinceStart += Time.deltaTime;
                 transform.transform.position = Vector3.Lerp(transform.position, newpos, timeSinceStart / 2 * Movespeed);
                 if (transform.position == newpos)
+                {
                     yield break;
+                }
+
                 yield return null;
             }
         }

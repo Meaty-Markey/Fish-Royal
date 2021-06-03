@@ -10,7 +10,7 @@ namespace Code
         public Sprite killerWhale;
         public Sprite hammerheadShark;
         public Sprite yellowFish;
-        private int _totalCoins;
+        private readonly int _totalCoins;
 
         private void Start()
         {

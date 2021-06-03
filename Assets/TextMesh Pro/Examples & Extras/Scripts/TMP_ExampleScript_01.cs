@@ -28,9 +28,13 @@ namespace TextMesh_Pro.Scripts
             // Get a reference to the TMP text component if one already exists otherwise add one.
             // This example show the convenience of having both TMP components derive from TMP_Text. 
             if (objectType == 0)
+            {
                 _mText = GetComponent<TextMeshPro>() ?? gameObject.AddComponent<TextMeshPro>();
+            }
             else
+            {
                 _mText = GetComponent<TextMeshProUGUI>() ?? gameObject.AddComponent<TextMeshProUGUI>();
+            }
 
             // Load a new font asset and assign it to the text object.
             _mText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/Anton SDF");
@@ -45,7 +49,7 @@ namespace TextMesh_Pro.Scripts
             _mText.text = "A <#0080ff>simple</color> line of text.";
 
             // Get the preferred width and height based on the supplied width and height as opposed to the actual size of the current text container.
-            var size = _mText.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
+            Vector2 size = _mText.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
 
             // Set the size of the RectTransform based on the new calculated values.
             _mText.rectTransform.sizeDelta = new Vector2(size.x, size.y);

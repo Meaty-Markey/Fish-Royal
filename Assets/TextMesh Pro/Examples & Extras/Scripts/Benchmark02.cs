@@ -14,14 +14,15 @@ namespace TextMesh_Pro.Scripts
 
         private void Start()
         {
-            for (var i = 0; i < numberOfNpc; i++)
+            for (int i = 0; i < numberOfNpc; i++)
+            {
                 if (spawnType == 0)
                 {
                     // TextMesh Pro Implementation
-                    var go = new GameObject();
+                    GameObject go = new GameObject();
                     go.transform.position = new Vector3(Random.Range(-95f, 95f), 0.25f, Random.Range(-95f, 95f));
 
-                    var textMeshPro = go.AddComponent<TextMeshPro>();
+                    TextMeshPro textMeshPro = go.AddComponent<TextMeshPro>();
 
                     textMeshPro.autoSizeTextContainer = true;
                     textMeshPro.rectTransform.pivot = new Vector2(0.5f, 0);
@@ -40,10 +41,10 @@ namespace TextMesh_Pro.Scripts
                 else if (spawnType == 1)
                 {
                     // TextMesh Implementation
-                    var go = new GameObject();
+                    GameObject go = new GameObject();
                     go.transform.position = new Vector3(Random.Range(-95f, 95f), 0.25f, Random.Range(-95f, 95f));
 
-                    var textMesh = go.AddComponent<TextMesh>();
+                    TextMesh textMesh = go.AddComponent<TextMesh>();
                     textMesh.font = Resources.Load<Font>("Fonts/ARIAL");
                     textMesh.GetComponent<Renderer>().sharedMaterial = textMesh.font.material;
 
@@ -60,14 +61,14 @@ namespace TextMesh_Pro.Scripts
                 else if (spawnType == 2)
                 {
                     // Canvas WorldSpace Camera
-                    var go = new GameObject();
-                    var canvas = go.AddComponent<Canvas>();
+                    GameObject go = new GameObject();
+                    Canvas canvas = go.AddComponent<Canvas>();
                     canvas.worldCamera = Camera.main;
 
                     go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
                     go.transform.position = new Vector3(Random.Range(-95f, 95f), 5f, Random.Range(-95f, 95f));
 
-                    var textObject = new GameObject().AddComponent<TextMeshProUGUI>();
+                    TextMeshProUGUI textObject = new GameObject().AddComponent<TextMeshProUGUI>();
                     textObject.rectTransform.SetParent(go.transform, false);
 
                     textObject.color = new Color32(255, 255, 0, 255);
@@ -79,6 +80,7 @@ namespace TextMesh_Pro.Scripts
                     _floatingTextScript = go.AddComponent<TextMeshProFloatingText>();
                     _floatingTextScript.spawnType = 0;
                 }
+            }
         }
     }
 }

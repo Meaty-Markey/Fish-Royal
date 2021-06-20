@@ -96,7 +96,9 @@ namespace Code
                 coin.text = $"Coins: {_coins}";
                 Destroy(col.gameObject);
                 PlayerPrefs.SetInt("Coin", _coins);
-                SceneManager.LoadScene("Menu");
+                SceneManager.LoadScene("Died" +
+                    "" +
+                    "");
 
             }
 

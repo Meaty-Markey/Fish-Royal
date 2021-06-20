@@ -9,9 +9,13 @@ namespace Code
 
         public void PlayGame()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SceneManager.LoadScene("Game");
         }
 
+        public void PlayMenu()
+        {
+            SceneManager.LoadScene("Menu");
+        }
         public void QuitGame()
         {
             PlayerPrefs.DeleteKey("Coin");

@@ -5,9 +5,9 @@ namespace Code
 {
     public class Aimovement : MonoBehaviour
     {
-        private const float Movespeed = 1f;
+        private const float Movespeed = 0.5f;
         public Rigidbody2D rb;
-        private readonly float _countdownTimer = 1f;
+        private readonly float _countdownTimer = 2f;
         private float _currentTime;
         private float _up, _down, _left, _right;
 
